@@ -1,0 +1,36 @@
+<html>
+  <script language="javascript" >
+    function transfer(mode){
+      var src=srcText.value;
+      var des=desText.value;
+      if(mode==1){
+        des="";
+        if(src.length>0){
+          var ary =src.split(" ");
+          for(var i=0; i<ary.length; i++){
+            if(ary[i].length>0){
+              des =des +" " + String.fromCharCode(parseInt(ary[i], 16));
+            }
+         desText.value = des;
+        }
+      }
+    }else if(mode==2){
+      src="";
+      if(des.length>0){
+          for(var i=0; i<des.length; i++){
+              src =src+ des.charCodeAt(i).toString(16) +" ";
+            }
+      }
+      srcText.value = src;
+    }
+  }
+  </script>
+  <body>
+    <table>
+      <tr><td><textarea id=srcText rows=15 cols=40 ></textarea>
+          <td><input type=button onclick="javascript:transfer(1);" value="Hex-->Ascii" /><br><br>    <input type=button onclick="javascript:transfer(2);" value="Hex<--Ascii" />
+      
+            <td><textarea id=desText rows=15 cols=40 ></textarea>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,154 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>BRMS-P Builder</name>
+    <groupId>org.jboss</groupId>
+    <artifactId>brms-p</artifactId>
+    <packaging>pom</packaging>
+    <version>5.3.0.dev1</version>
+
+    <properties>
+      <drools.version>5.1.1.Final</drools.version>
+        <jbpm.editor.version>5.1.1.Final</jbpm.editor.version>
+        <bpmn2.version>1.0.0.052</bpmn2.version>
+    </properties>
+
+    <!--build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.drools</groupId>
+                        <artifactId>drools-rhq-plugin</artifactId>
+                        <version>${drools.version}</version>
+                        <type>jar</type>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>copy-client-jar</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.drools</groupId>
+                                    <artifactId>drools-rhq-plugin</artifactId>
+                                    <version>${drools.version}</version>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>rhq-brms-plugin-${project.version}.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build-->
+    <!--profiles>
+        <profile>
+            <id>fetch.external</id-->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.savage7.maven.plugins</groupId>
+                        <artifactId>maven-external-dependency-plugin</artifactId>
+                        <version>0.4</version>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <stagingDirectory>${project.build.directory}/dependencies/</stagingDirectory>
+                            <createChecksum>true</createChecksum>
+                            <skipChecksumVerification>false</skipChecksumVerification>
+                            <force>false</force>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jbpm.bpmn2</groupId>
+                                    <artifactId>bpmn2-designer</artifactId>
+                                    <version>${bpmn2.version}</version>
+                                    <packaging>war</packaging>
+                                    <downloadUrl>http://sourceforge.net/projects/jbpm/files/designer/designer-1.0.0.052/designer-1.0.0.052-jboss.war</downloadUrl>
+                                    <checksum>b1d1a881afccde1c7abcad7a10fdd235</checksum>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jbpm</groupId>
+                                    <artifactId>jbpm</artifactId>
+                                    <version>${jbpm.editor.version}</version>
+                                    <packaging>zip</packaging>
+                                    <classifier>eclipse-all</classifier>
+                                    <downloadUrl>http://sourceforge.net/projects/jbpm/files/jBPM%205/jbpm-5.1.0.Final/jbpm-5.1.0.Final-eclipse-all.zip</downloadUrl>
+                                    <checksum>5f4ff8f665c75dd5aa0606f8aba9881b</checksum>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>clean-external-dependencies</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean-external</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>resolve-install-external-dependencies</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>resolve-external</goal>
+                                    <goal>install-external</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>deploy-external-dependencies</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy-external</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>ossrh</id>
+                    <name>Sonatype OSS Repository</name>
+                    <url>http://oss.sonatype.org/content/groups/public</url>
+                    <layout>default</layout>
+                </pluginRepository>
+            </pluginRepositories>
+        <!--/profile>
+    </profiles-->
+
+  <dependencies>
+    <!-- Binaries and sources -->
+   <dependency>
+	<groupId>org.jbpm.bpmn2</groupId>
+	<artifactId>bpmn2-designer</artifactId>
+	<version>${bpmn2.version}</version>
+	<type>war</type>
+    </dependency>
+    <dependency>
+	<groupId>org.jbpm</groupId>
+	<artifactId>jbpm</artifactId>
+	<version>${jbpm.editor.version}</version>
+	<classifier>eclipse-all</classifier>
+	<type>zip</type>
+    </dependency>
+
+  </dependencies>
+
+
+    <!--MEAD require distributionManagement section -->
+    <distributionManagement>
+      <repository>
+        <id>Internal testing release</id>
+        <name>Internal testing release</name>
+        <url>file:///dummp/repo</url>
+      </repository>
+  </distributionManagement>
+
+</project>

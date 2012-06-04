@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project name="Selenium" default="compile" basedir=".">
+  <property name="sourcedir" value="${basedir}/src"/>
+  <property name="targetdir" value="${basedir}/target"/>
+  <property name="local_repo" value="/home/ryan/.m2/repository"/>
+
+  <path id="classpath">
+    <fileset dir="${basedir}/selenium-java-client-driver-1.0.1">
+      <include name="selenium-java-client-driver.jar" />
+    </fileset>
+    <fileset dir="${local_repo}">
+      <include name="junit/junit/3.8.1/junit-3.8.1.jar" />
+    </fileset>
+  </path>
+
+  <target name="clean">
+    <delete dir="${targetdir}" />
+  </target>
+
+  <target name="compile" depends="clean">
+    <mkdir dir="${targetdir}" />
+    <javac srcdir="${sourcedir}" destdir="${targetdir}" classpathref="classpath" />
+  </target>
+
+  <target name="run" depends="compile" > 
+    <junit fork="false" printsummary="on" haltonerror="no" showoutput="on" >
+      <batchtest todir="report/xml">
+        <fileset dir="${targetdir}" includes="*Test.class" />
+      </batchtest>
+      <classpath path="${targetdir}" >
+        <path refid="classpath" />
+          <pathelement path="${targetdir}" />
+      </classpath>
+        
+    </junit>
+  </target>
+
+</project>

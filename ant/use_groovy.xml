@@ -1,0 +1,24 @@
+<project name="MyProject" basedir="." default="main">
+
+  <path id="ant.libs" >
+    <fileset dir="lib">
+      <include name="bsf.jar" />
+      <include name="groovy-1.6.3.jar" />
+      <include name="asm-2.2.3.jar" />
+      <include name="asm-util-2.2.3.jar" />
+      <include name="antlr-2.7.7.jar" />
+    </fileset>
+  </path>
+<target name="main">
+  <script language="groovy" classpathref="ant.libs">
+    br = new BufferedReader(new java.io.FileReader(".svn/entries"));
+    while(1){
+      s=br.readLine();
+      System.out.println(s);
+      if (s == null) break;
+    }
+    br.close();
+  </script>
+</target>
+
+</project>

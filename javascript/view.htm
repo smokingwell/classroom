@@ -1,0 +1,98 @@
+<html>
+		<head>
+				<title>:-)</title>
+<script type="text/javascript" >
+	var GIF_WIDTH=1024;
+	var GIF_HEIGHT=768;	
+
+	function getTopView(){
+		var allFrame=document.getElementsByTagName("iframe");
+		//var childBtnGo=document.getElementById("btnGo");	
+		/*
+		alert(document.childNode.length);
+		if(allFrame.length>0){
+		alert(allFrame[0].tagName);
+		alert(allFrame[0].parentNode);
+		}
+		*/
+		var l=allFrame.length;
+		var parent;
+		if(l>0)parent=allFrame[0].parentNode;
+		for(var i=0; i< l; i++){			
+			parent.removeChild(allFrame[0]);
+		}	
+		
+		var zStockCode, zDateList, nInterval;
+		zStockCode=txtStockCode.value;
+		zDateList=txtDateList.value;
+		nInterval=txtInterval.value;
+			//document.write(" "+zStockCode+" "+zDateList+" "+nInterval+"<BR>")	;
+			//checkInput(zStockCode, zDateList, nInterval);
+			
+		var arDateList=new Array("0320", "0321", "0325", "0326" );
+		if(txtStockCode.value==""){alert("输入股票代码");return;}
+		if(txtDateList.value==""){alert("日期列表");return;}		
+		var arDateList=txtDateList.value.split(" ");
+		alert(arDateList.length);
+		createView(txtStockCode.value,arDateList);
+
+	}
+
+	function mkurl_DJTopview(stockCode, viewDate){
+			return "http://www.djstock.cn/bbs/topview/"+viewDate+"/"+stockCode+".gif";
+	} 
+	function getContentH(lyr){
+			return lyr.scrollHeight;
+		
+	}
+	function getContentW(lyr){
+			//(is.ie) ? (is.mac ? lyr.offsetHeight : lyr.scrollHeight)
+			return lyr.scrollWidth;
+	}
+		
+
+	function px(i) {
+			return i + "px";
+	}
+
+	function setSize(obj, w, h) {
+		if (w) obj.style.width = px(w);
+		if (h) obj.style.height = px(h);
+	}
+
+	function createView(zStockCode, arDateList){
+			for(var i = 0; i < arDateList.length; i++)	{
+				var pic_url=mkurl_DJTopview(zStockCode, arDateList[i]);
+				var f=document.createElement("IFRAME");
+				f.src=pic_url;
+				//f.scroll(0,3000);
+				document.body.appendChild(f);
+				//getContentH(f.offsetParent);				
+				if(txtSizeW.value=="" || txtSizeW.value==0)txtSizeW.value=GIF_WIDTH;
+				if(txtSizeH.value==""||txtSizeH.value==0)txtSizeH.value=GIF_HEIGHT;
+				setSize(f, txtSizeW.value,txtSizeH.value);
+			}
+
+	}
+	
+	function changeView(){
+			var allFrame=document.getElementsByTagName("iframe");
+			
+			for( var i=0; i< allFrame.length;  i++){				
+				setSize(allFrame[i], GIF_WIDTH, GIF_HEIGHT);
+			}
+	}
+
+
+</script>
+</head>
+<body style="position:absolute" >
+		code: <input id="txtStockCode" type="text" value=""  style="width:64" /> date list: <input id="txtDateList" type="text" value="" style="width:128" />
+		Interval:<input id="txtInterval" type="text" value="" />
+		Size:Width<input id="txtSizeW" type="text" value="" style="width:32" /> Height:<input id="txtSizeH" type="text" value="" style="width:32"/>
+		<input type="button"  onclick="changeView()" id="btnMax" value="最大化"/>
+		<input type="button"  onclick="getTopView()" id="btnGo" value="go"/>
+
+
+		</body>
+</html>

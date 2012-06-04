@@ -1,0 +1,12 @@
+#!/bin/bash
+test $1 -eq $2 2>/dev/null
+# return 0 means success
+if [ $? -ne 0 ]
+then
+		test $1 == $2
+		#2>/dev/null
+		if [ $? -ne 0 ]
+		then
+				echo "expected $1 but :$2\a"
+		fi
+fi

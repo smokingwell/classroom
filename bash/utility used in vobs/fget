@@ -1,0 +1,9 @@
+#!/bin/bash
+TARGET_PATH=.
+SRC_PATH=/home/e7104c/incoming
+
+for i in $* ; do
+	chmod 0755 $i
+	cp $SRC_PATH/$i $TARGET_PATH/$i
+done
+

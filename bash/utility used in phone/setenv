@@ -1,0 +1,5 @@
+#!/bin/sh
+mount -t vfat /dev/loop/0 /ezxlocal/download/mystuff -o sync,shortname=mixed,utf8,uid=200,gid=233,nosuid,nodev,remount
+
+export PATH=./:$PATH
+export LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH

@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<project name="JMX" default="compile" basedir=".">
+	<property environment="env" />
+	<property name="jboss.home" value="${env.JBOSS_HOME}" />
+	<property name="classes.dir" value="build" />
+	<property name="src" value="src" />
+	<property name="lib" value="lib" />
+
+
+	<path id="compile.classpath">
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+    <!--only 4 lesson 7-->
+    <fileset dir="${jboss.home}/client">
+			<include name="*.jar" />
+		</fileset>
+    <fileset dir="${jboss.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement location="${classes.dir}" />
+	</path>
+
+	<target name="clean">
+    <!--use fileset when delete * or ? to represent multi files-->
+    <delete>
+      <fileset dir="." includes="*.class"/>
+    </delete>
+	</target>
+
+  <target name="compile" depends="clean">
+    <mkdir dir="${classes.dir}" />
+		<javac classpathref="compile.classpath" debug="true" deprecation="true" destdir="${classes.dir}" fork="yes" memoryInitialSize="128m" memoryMaximumSize="256m" nowarn="false" target="1.5">
+			<src path="${src}" />
+		</javac>
+    <copy todir="${classes.dir}/mbean/lesson4/" file="${src}/mbean/lesson4/mbeans-descriptors.xml" />
+  </target>
+
+	<target name="deploy2jboss" depends="compile">
+    <jar jarfile="${classes.dir}/lesson7.sar">
+			<fileset dir="${classes.dir}">
+        <include name="mbean/lesson7/*" />
+			</fileset>
+			<fileset dir="${src}">
+        <include name="META-INF/*" />
+			</fileset>
+		</jar>
+    <copy todir="${jboss.home}/server/default/deploy/" file="${classes.dir}/lesson7.sar" />
+
+	</target>
+
+	<target name="run1" depends="compile">
+		<java classname="mbean.lesson1.HelloAgent" fork="yes" dir=".">
+			<classpath refid="compile.classpath" />
+		</java>
+	</target>
+
+	<target name="run2" depends="compile">
+		<java classname="mbean.lesson2.HelloAgent" fork="yes" dir=".">
+			<classpath refid="compile.classpath" />
+		</java>
+	</target>
+
+	<target name="run3" depends="compile">
+		<java classname="mbean.lesson3.HelloAgent" fork="yes" dir=".">
+			<classpath refid="compile.classpath" />
+		</java>
+	</target>
+
+	<target name="run4" depends="compile">
+		<java classname="mbean.lesson4.HelloAgent" fork="yes" dir=".">
+			<classpath refid="compile.classpath" />
+		</java>
+	</target>
+
+	<target name="run5" depends="compile">
+		<java classname="mbean.lesson5.HelloAgent" fork="yes" dir=".">
+			<classpath refid="compile.classpath" />
+		</java>
+	</target>
+
+	<target name="run6" depends="compile">
+
+		<java classname="mbean.lesson6.HelloAgent" fork="yes" dir=".">
+			<classpath refid="compile.classpath" />
+      <jvmarg value="-Dcom.sun.management.jmxremote=HelloAgent"/>
+		</java>
+
+		<java classname="mbean.lesson6.HelloAgent2" fork="yes" dir=".">
+			<classpath refid="compile.classpath" />
+		</java>
+	</target>
+
+	<target name="run7" depends="deploy2jboss">
+    <!--run via http://localhost:8080/jmx-console/-->
+	</target>
+
+</project>

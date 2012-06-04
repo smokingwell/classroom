@@ -1,0 +1,6 @@
+<project default="default" basedir="." >
+  <target name="default" if="One">
+    <echo message="default is called!" />
+  </target>
+</project>
+

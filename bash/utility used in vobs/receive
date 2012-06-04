@@ -1,0 +1,12 @@
+#!/bin/sh
+ftp -n<<!
+open bjdclnx01
+user e7104c zmkmzmkmMoto$
+binary
+prompt off
+cd linuxfilebox
+mget *
+mdelete *
+close
+bye
+!

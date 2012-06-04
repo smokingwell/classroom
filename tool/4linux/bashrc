@@ -1,0 +1,37 @@
+#for my customizer linux bash setting
+#bash completion for svn command
+if [ -f bash_completion ]; then
+  source bash_completion
+fi
+
+export EDITOR=vim
+set -o vi
+
+export soaserver=.englab.brq.redhat.com
+export soaserver1=.mw.lab.eng.brq.redhat.com
+export soa43url=https://svn.devel.redhat.com/repos/jboss-soa/branches/4.3/build-tools
+export soatrunkurl=https://svn.devel.redhat.com/repos/jboss-soa/trunk/build-tools
+export soa42url=https://svn.devel.redhat.com/repos/jboss-soa/branches/4.2.0/build-tools
+export raycom=10.66.14.114
+
+PATH=$HOME/bin:$PATH
+
+alias "vnc14=vncviewer -shared xen14$soaserver:4 -passwd ~/.vnc/xen14passwd"
+alias "vnc78=vncviewer -shared xen78$soaserver:4 -passwd ~/.vnc/xen14passwd"
+alias "vnc05=vncviewer -shared jawa05$soaserver:4 -passwd ~/.vnc/jawa05passwd"
+alias "vncraycom=vncviewer -shared $raycom:4 -passwd ~/.vnc/raycompasswd"
+alias "vncg3=vncviewer -shared jawa37g3.mw.lab.eng.brq.redhat.com:4 "
+alias "vncg1=vncviewer -shared jawa37g1.mw.lab.eng.brq.redhat.com:4 -passwd ~/.vnc/g1passwd"
+alias "vncg2=vncviewer -shared jawa37g2.mw.lab.eng.brq.redhat.com:4 "
+alias "sshraycom=ssh rzhang@10.66.14.114"
+alias "ssh14=ssh rzhang@xen14$soaserver"
+alias "ssh78=ssh rzhang@xen78$soaserver"
+alias "ssh05=ssh rzhang@jawa05$soaserver"
+alias "sshg3=ssh rzhang@jawa37g3.mw.lab.eng.brq.redhat.com"
+alias "sshg1=ssh rzhang@jawa37g1.mw.lab.eng.brq.redhat.com"
+alias "sshg2=ssh rzhang@jawa37g2.mw.lab.eng.brq.redhat.com"
+alias "mvelshell=java -jar  mvel2-2.0.12.jar"
+alias "vim=vimx"
+#xen14 don't have vimx
+alias "vi=/usr/bin/vim"
+alias "re=mutt -H ~/bin/review.template "

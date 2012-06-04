@@ -1,0 +1,32 @@
+<html>
+<head>
+</head>
+<body>
+<input type="textarea" id="realtimeprice"></input>
+<iframe id="scratcher" src="http://business.sohu.com" style="visibility:"></iframe>
+ <div id="oHotSector" >a</div> 
+ <script type="text/javascript">
+ 
+ 	var flagNeedInit=0;
+    
+ 	function reload(){
+ 		var code=document.getElementById("scratcher");
+ 		//alert(code);
+ 		//if(!code) flagNeedInit=1;
+		if(code)document.body.removeChild(code);
+		code=document.createElement("iframe");
+		code.id="scratcher";
+		code.src="http://business.sohu.com";
+		document.body.appendChild(code);
+		//if(flagNeedInit)return null;		
+ 		alert(code.innerHTML);	
+	}
+	
+	reload();
+	//alert(scratcher.contentDocument.innerHTML);
+	setTimeout(reload,4000);
+	//setInterval(reload,60000);//
+	</script>
+</body>   
+<script type="text/javascript">
+</script>

@@ -1,0 +1,38 @@
+<project default="default" basedir="." >
+  <target name="default" >
+    <property name="y" value="http://www.blabla/a.zip" />
+    <property name="a" value="" />
+    <dirname property="z" file="${y}" />
+    <pathconvert property="x" >
+      <path path="http://www.blalba/a.zip" />
+      <mapper type="regexp" from="(.*)/([^\/]*)$" to="\1/MD5" />
+    </pathconvert> 
+
+    <propertyfile file="temp">
+      <entry key="url" value="${y}" />
+    </propertyfile>
+    <replaceregexp >
+      <regexp pattern="(.*)/([^\/]*)$" />
+      <substitution expression="\1/MD5" />
+      <fileset dir="." includes="temp" />
+    </replaceregexp>
+    <loadproperties>
+      <file file="temp" />
+    </loadproperties>
+    <condition property="c" >
+      <isset property="b" />
+    </condition>
+    <condition property="d" >
+      <isset property="a" />
+    </condition>
+    <echo>a is ${a}</echo>
+    <echo>b is ${b}</echo>
+    <echo>${c}, ${d}</echo>
+    <echo>url is ${url}</echo>
+    <echo>x is ${x}</echo>
+    <echo>z is ${z}</echo>
+    <echo>url is ${url}</echo>
+
+  </target>
+</project>
+

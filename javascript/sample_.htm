@@ -1,0 +1,24 @@
+<html>
+<head>
+</head>
+<body>
+<input type="text" id="realtimeprice"></input>
+ <script type="text/javascript" src="http://hq.sinajs.cn/list=sh601006" id="jscode" charset="gb2312"></script>
+ <script type="text/javascript">
+ 	function reload(){
+		var code=document.getElementById("jscode");
+		if(!code) return;
+		document.body.removeChild(code);
+		code=document.createElement("script");
+		code.src="http://hq.sinajs.cn/list=sh601006";
+		code.id="jscode";
+		code.charset="gb2312";
+		document.body.appendChild(code);
+		elements=hq_str_sh601006.split(",");
+		document.getElementById("realtimeprice").value=elements[3];           
+	}
+	reload();
+	setInterval(reload,2000);//每两秒钟更新一次
+	</script>
+</body>   
+</script>

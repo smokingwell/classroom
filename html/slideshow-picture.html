@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" /> 
+<title>图片播放器_图片轮换_焦点效果</title> 
+<style type="text/css"> 
+    #focus_m{position:relative; background:#133775} 
+    .f_img_roll{width:600px; height:800px; position:relative;} 
+    .f_img_roll img{position:absolute; left:0; top:0; } 
+    .f_img_tree{position:absolute; width:75px; height:300px; right:3px; top:0;} 
+    .f_img_tree div{position:absolute; z-index:201; top:3px; right:0; width:75px; height:47px; background:url(http://www.kuanghong.com/han/images/mask.gif) no-repeat;} 
+    .f_img_tree ul{margin:0; padding:0; list-style:none; position:absolute; right:0;} 
+    .f_img_tree li{width:60px; height:45px; border:1px solid #0066cc; margin-top:3px;} 
+    .f_img_tree img{width:54px; height:39px; border:3px solid #000066; vertical-align:top;} 
+    .f_con{color:#fff; height:70px;} 
+    .f_con .f_title{font-size:14px; height:30px; line-height:30px; margin-top:5px; font-weight:bold; text-align:center;} 
+    .f_con .f_title a:link, .f_con .f_title a:visited{color:#fff; text-decoration:none} 
+    .f_con .f_title a:hover{text-decoration:underline} 
+    .f_con .f_con{font-size:12px; padding:0 10px; height:40px; line-height:150%;} 
+  </style> 
+  <script type="text/javascript"> 
+  function $A(iterable) { 
+        var results = []; 
+        for (var i = 0; i < iterable.length; i++)results.push(iterable[i]); 
+        return results; 
+    } 
+    Function.prototype.bind = function() { 
+        var __method = this, args = $A(arguments), object = args.shift(); 
+        return function() { 
+            return __method.apply(object, args.concat($A(arguments))); 
+        } 
+    } 
+/*
+        var imgs = [ 
+            {max:'http://www.kuanghong.com/han/images/img_1.jpg', min:'http://www.kuanghong.com/han/images/img_1s.jpg', url:'#', title:'标题01标题01标题01标题01标题01', con:'内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01内容01'}, 
+            {max:'http://www.kuanghong.com/han/images/img_2.jpg', min:'http://www.kuanghong.com/han/images/img_2s.jpg', url:'#', title:'标题02标题02标题02标题02标题02', con:'内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02内容02'}, 
+            {max:'http://www.kuanghong.com/han/images/img_3.jpg', min:'http://www.kuanghong.com/han/images/img_3s.jpg', url:'#', title:'标题03标题03标题03标题03标题03', con:'内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03内容03'}, 
+            {max:'http://www.kuanghong.com/han/images/img_4.jpg', min:'http://www.kuanghong.com/han/images/img_4s.jpg', url:'#', title:'标题04标题04标题04标题04标题04', con:'内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04内容04'}, 
+            {max:'http://www.kuanghong.com/han/images/img_5.jpg', min:'http://www.kuanghong.com/han/images/img_5s.jpg', url:'#', title:'标题05标题05标题05标题05标题05', con:'内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05内容05'}, 
+            {max:'http://www.kuanghong.com/han/images/img_6.jpg', min:'http://www.kuanghong.com/han/images/img_6s.jpg', url:'#', title:'标题06标题06标题06标题06标题06', con:'内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06内容06'} 
+        ]; 
+        */
+function QueryString(item){
+     var sValue=location.search.match(new RegExp("[\?\&]"+item+"=([^\&]*)(\&?)","i"))
+     return sValue?sValue[1]:sValue
+}
+var release_day=QueryString('arg1');
+var item=QueryString('arg2');
+var imgs= new Array();
+for (var i=0;i<9;i++){
+  imgs[i]=new Object(); 
+  imgs[i].max='http://wvw.renticd.com/files/20110'+release_day+'/'+item+i+'.jpg';
+  imgs[i].min=imgs[i].max;
+  imgs[i].url='#';
+  imgs[i].title='pp';
+  imgs[i].con='pp';
+}
+        function focus(){this.initialize.apply(this,arguments)} 
+        focus.prototype = { 
+            initialize: function(imgs, fc, tim, speed){ 
+                this.imgs    = imgs; 
+                this.tim    = tim*1000 || 2000; 
+                this.speed    = speed || 0.3; 
+                this.t        = null;        // 动作计时 
+                this.tm        = null;        // 图片计时 
+                this.tb        = null;        // 滑块儿计时 
+                this.cur_i    = 0;        // 当前图片位置 
+                this.move    = false;    // 是否在运动 
+                this.tem    = 0;        // 临时数据 
+                this.posTo    = 0;        // 滑块儿目的地 
+                this.over    = 0; 
+                var ds        = document.getElementById(fc).getElementsByTagName('div'); 
+                var di        = ds[0]; 
+                this.img_m    = document.createElement('img'); 
+                this.img_m2 = this.img_m.cloneNode(true); 
+                var dm        = ds[1]; 
+                this.title    = ds[3]; 
+                this.con    = ds[4]; 
+                this.mask    = document.createElement('div'); 
+                this.ul        = document.createElement('ul'); 
+                this.lis    = []; 
+                this.img_m.style.zIndex = 101; 
+                this.img_m2.style.zIndex = 100; 
+                di.appendChild(this.img_m); 
+                di.appendChild(this.img_m2); 
+                di = null; 
+                dm.appendChild(this.mask); 
+                dm.appendChild(this.ul); 
+                dm = null; 
+                this.img_cache(); 
+                this.load(); 
+            }, 
+            img_cache: function(){ 
+                var img = new Image(); 
+                for(var i=0; i<this.imgs.length; i++)img.src = this.imgs[i].max; 
+            }, 
+            stop: function(){ 
+                clearTimeout(this.t); 
+                this.over = 1; 
+            }, 
+            start: function(){ 
+                this.over = 0; 
+                this.t = setTimeout(this.f_next.bind(this,null), this.tim); 
+            }, 
+            load: function(){ 
+                var imgs             = this.imgs; 
+                this.img_m.src         = imgs[0].max;   // 加载默认大图 
+                this.title.innerHTML = '<a href="'+imgs[0].url+'">'+imgs[0].title+'</a>'; // 标题 
+                this.con.innerHTML     = imgs[0].con;      //内容 
+                var oThis          = this; 
+                for(var i=0; i<imgs.length; i++){     //加载小图 
+                    var li              = document.createElement('li'); 
+                        li.onclick      = function(){ oThis.f_next.call(oThis,this.i); } 
+                        li.innerHTML  = '<img src="'+imgs[i].min+'" alt="" />'; 
+                        li.i          = i; 
+                        this.lis.push(li); 
+                        this.ul.appendChild(li); 
+                } 
+                var lis = this.ul.childNodes; 
+                for(var i=0; i<lis.length; i++){ 
+                    lis[i].onmouseover = function(){ this.style.border="1px solid #cc0000"; } 
+                    lis[i].onmouseout = function(){ this.style.border="1px solid #0066cc"; } 
+                } 
+                this.t = setTimeout(this.f_next.bind(this,null), this.tim); 
+                this.title.parentNode.onmouseover = this.stop.bind(this); 
+                this.title.parentNode.onmouseout = this.start.bind(this); 
+            }, 
+            f_next: function(n){ 
+                if(this.tb) clearInterval(this.tb); 
+                if(this.t) clearTimeout(this.t); 
+                if(this.tm) clearInterval(this.tm); 
+                if(n)this.cur_i = n-1; 
+                var top = 0; 
+                if(n!=0 && this.imgs[this.cur_i+1]){ 
+                    this.posTo = this.lis[this.cur_i+1].offsetTop; 
+                    this.cur_i = this.cur_i+1; 
+                }else{ 
+                    this.posTo = this.lis[0].offsetTop; 
+                    this.cur_i = 0; 
+                } 
+                this.tem = this.mask.offsetTop; 
+                this.tem > this.posTo? top = 1 : top = 0; 
+                this.tb = setInterval(this.moveTo.bind(this, top), 25); 
+            }, 
+            moveTo: function(top){ 
+                if(!top){ 
+                    if((this.tem+1.8)>=this.posTo+1){ 
+                        this.mask.style.top = this.posTo+'px'; 
+                        clearInterval(this.tb); 
+                        this.img_swap(); 
+                        return; 
+                    } 
+                    this.tem += (this.posTo-this.tem)*this.speed 
+                }else{ 
+                    if((this.tem-1.8)<=this.posTo-1){ 
+                        this.mask.style.top = this.posTo+'px'; 
+                        clearInterval(this.tb); 
+                        this.img_swap(); 
+                        return; 
+                    } 
+                    this.tem -= (this.tem-this.posTo)*this.speed; 
+                } 
+                this.mask.style.top = this.tem+'px'; 
+            }, 
+            img_swap: function(){ 
+                var t, b; 
+                if(this.img_m.style.zIndex>this.img_m2.style.zIndex){ 
+                    t = this.img_m; 
+                    b = this.img_m2; 
+                }else{ 
+                    t = this.img_m2; 
+                    b = this.img_m; 
+                } 
+                this.title.innerHTML = '<a href="'+this.imgs[this.cur_i].url+'">'+this.imgs[this.cur_i].title+'</a>'; 
+                this.con.innerHTML     = this.imgs[this.cur_i].con; 
+                b.src                 = this.imgs[this.cur_i].max; 
+                /MSIE/.test(navigator.userAgent) ? this.tem = t.style.filter ? t.style.filter.replace(/^.+=(\d+).+$/,'$1') : 100 : this.tem = t.style.opacity ? t.style.opacity*100 : 100; 
+                this.tm                 = setInterval(this.img_hid.bind(this, t, b), 25); 
+            }, 
+            img_hid: function(t,b){ 
+                this.tem -= 5; 
+                if(/MSIE/.test(navigator.userAgent)) 
+                    t.style.filter = 'alpha(opacity='+this.tem+')'; 
+                else 
+                    t.style.opacity = this.tem/100; 
+                if(this.tem <=0){ 
+                    clearInterval(this.tm); 
+                    var tz           = t.style.zIndex; 
+                    var bz           = b.style.zIndex; 
+                    t.style.zIndex = bz 
+                    b.style.zIndex = tz; 
+                    if(/MSIE/.test(navigator.userAgent)) 
+                        t.style.filter = 'alpha(opacity=100)'; 
+                    else 
+                        t.style.opacity = 1; 
+                    if(this.over) return; 
+                    this.t = setTimeout(this.f_next.bind(this, null), this.tim); // 继续循环 
+                } 
+            } 
+        } 
+        window.onload = function(){ 
+            new focus(imgs,'focus_m'); 
+        } 
+
+function moveto(rd,it){
+  document.location='slideshow_pic.html?arg1='+rd+'&arg2='+it;
+}
+  </script> 
+</head> 
+<body> 
+  <input type="button" id="slide_go1" value="<<" onclick="moveto(release_day-1,item)"/>
+  <input type="button" id="slide_go2" value="<" onclick="moveto(release_day,item-1)"/>
+  <input type="button" id="slide_go3" value=">" onclick="moveto(release_day,parseInt(item)+1)"/>
+  <input type="button" id="slide_go4" value=">>" onclick="moveto(parseInt(release_day)+1,item)"/>
+<div id="focus_m"> 
+  <div class="f_img_roll"></div><div class="f_img_tree"></div> 
+  <div class="f_con"> 
+    <div class="f_title"></div> 
+    <div class="f_con"></div> 
+  </div> 
+</div> 
+  <input type="button" id="slide_go1" value="<<" onclick="moveto(release_day-1,item)"/>
+  <input type="button" id="slide_go2" value="<" onclick="moveto(release_day,item-1)"/>
+  <input type="button" id="slide_go3" value=">" onclick="moveto(release_day,parseInt(item)+1)"/>
+  <input type="button" id="slide_go4" value=">>" onclick="moveto(parseInt(release_day)+1,item)"/>
+</body> 
+</html>
+

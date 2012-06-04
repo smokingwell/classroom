@@ -1,0 +1,29 @@
+<project name="" basedir="." >
+  <tstamp>
+    <format property="timestamp" pattern="dd-MMM-yy HH:mm:ss" />
+  </tstamp>
+  <property name="soa_builder_root" location="."/>
+  <property name="blabla" value="."/>
+  <property name="slash1" location="d:\\abc\d\e.xml"/>
+  <property name="slash2" location="d:/abc/d/e.xml"/>
+
+  <target name= "use_property" >
+    <echo message="${soa_builder_root}" />
+    <echo message="${ant.java.version}" />
+    <echo message="${blabla}" />
+    <echo message="${slash1}" />
+    <echo message="${slash2}" />
+  </target>
+  <target name= "use_tstammp" >
+		<echo message="${DSTAMP}" />
+		<echo message="${TODAY}" />
+    <echo message="${timestamp}" />
+	</target>
+  <target name="use_arg">
+    <exec executable="abc" >
+      <arg value="1" />
+      <arg value="2" />
+    </exec>
+  </target>
+
+</project>

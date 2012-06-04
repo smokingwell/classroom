@@ -1,0 +1,11 @@
+#!/bin/sh
+ftp -n<<!
+open bjdclnx01
+user e7104c Who'syourDaddy$
+binary
+prompt off
+cd xpfilebox
+mput * 
+close
+bye
+!

@@ -1,0 +1,53 @@
+<project name="x" default="run" >
+  <path id="cp.groovy">
+    <fileset dir="lib" includes="groovy-all-1.6.4.jar"/>
+    <fileset dir="lib" includes="junit-4.4.jar"/>
+  </path>
+  <!--taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpathref="cp.groovy" /-->
+  <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpathref="cp.groovy"/>
+  <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="cp.groovy"/>
+  <target name="run" >
+    <!--
+    <groovy>
+class TestCase extends GroovyTestCase {
+  void testPlus() {
+  assert 6 == 3 + 3
+  }
+  void testMult() {
+  assert 6 == 3 * 2
+  }
+}
+    </groovy>
+    -->
+
+    <!--groovy src="use_junit4.groovy" /-->
+    <groovy src="helloworld.groovy" />
+  </target>
+  <target name="junit" >
+    <delete dir="classes" />
+    <delete dir="report" />
+    <mkdir dir="classes" />
+    <mkdir dir="report/xml" />
+    <mkdir dir="report/html" />
+    <groovyc srcdir="." destdir="classes" includes="*Test.groovy" stacktrace="false" classpathref="cp.groovy" />
+    <javac srcdir="." destdir="classes" includes="*Test.java" classpathref="cp.groovy" />
+    <junit printsummary="on" haltonerror="no" haltonfailure="no" fork="no" showoutput="on">
+      <formatter type="xml" />
+      <!--test name="AGroovyTest" />
+      <test name="AJunitTest" /-->
+        <batchtest todir="report/xml">
+        <fileset dir="classes" includes="*Test.class" />
+      </batchtest>
+      <classpath>
+        <path refid="cp.groovy" />
+        <pathelement path="classes" />
+      </classpath>
+    </junit>
+    <junitreport todir="report/html">
+      <fileset dir="report/xml">
+        <include name="*.xml"/>
+      </fileset>
+      <report format="noframes" todir="report/html"/>
+    </junitreport>
+  </target>
+</project>

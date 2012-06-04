@@ -1,0 +1,10 @@
+#!/bin/bash
+if [ -z $1 ]
+then
+		echo "pls input a string as your bash name."
+		exit 1
+fi
+cp bash_template $1
+chmod +x $1
+vim $1
+

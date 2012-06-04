@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="testHtml.xsl"?>
+<TABLE>
+   <ROW>
+      <F1>Next one should be in H1 heading</F1>
+      <F2>&lt;H1&gt;This is a H1 heading&lt;/H1&gt;</F2>
+   </ROW>
+   <ROW>
+      <F1>Next one should be Italic</F1>
+      <F2>&lt;I&gt;I am italic&lt;/I&gt;</F2>
+   </ROW>
+   <ROW>
+      <F1>Next one is a link</F1>
+      <F2>Goto &lt;A HREF="http://www.microsoft.com"&gt;Microsoft&lt;/A&gt;</F2>
+   </ROW>
+</TABLE>	
+

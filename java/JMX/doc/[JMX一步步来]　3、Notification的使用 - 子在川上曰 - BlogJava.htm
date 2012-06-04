@@ -1,0 +1,742 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0062)http://www.blogjava.net/chengang/archive/2006/03/07/34083.html -->
+<HTML><HEAD 
+id=Head><TITLE>[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=utf-8">
+<META id=metaKeywords content=[JMX一步步来]　3、Notification的使用 name=keywords><LINK 
+id=MainCss href="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/style.css" 
+type=text/css rel=stylesheet><LINK id=RSSLink title=RSS 
+href="http://www.blogjava.net/chengang/rss.aspx" type=application/rss+xml 
+rel=alternate>
+<META content="MSHTML 6.00.2900.3492" name=GENERATOR></HEAD>
+<BODY>
+<FORM id=Form1 name=Form1 onsubmit="javascript:return WebForm_OnSubmit();" 
+action=34083.html method=post>
+<DIV><INPUT id=__EVENTTARGET type=hidden name=__EVENTTARGET> <INPUT 
+id=__EVENTARGUMENT type=hidden name=__EVENTARGUMENT> <INPUT 
+id="&#13;&#10;__VIEWSTATE" type=hidden name=__VIEWSTATE> </DIV>
+<SCRIPT type=text/javascript>
+//<![CDATA[
+var theForm = document.forms['Form1'];
+if (!theForm) {
+    theForm = document.Form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</SCRIPT>
+
+<SCRIPT 
+src="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/WebResource.axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JavaScript>
+									function ctlent(evt,id)
+											{
+												if(evt.ctrlKey && evt.keyCode == 13)
+												{	
+													try
+													{
+														TempSave(id);
+													}
+													catch(ex)
+													{
+													}
+													finally
+													{
+													    __doPostBack('AjaxHolder$PostComment$btnSubmit','')
+													}
+												}
+		
+												}</SCRIPT>
+
+<SCRIPT language=JavaScript>function SetReplyAuhor(author){document.getElementById('AjaxHolder_PostComment_tbComment').value+="@"+author+"\n";document.getElementById('AjaxHolder_PostComment_tbComment').focus();return false}</SCRIPT>
+
+<SCRIPT 
+src="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/ScriptResource.axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT 
+src="D:\ryan\classroom\java\JMX\[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files\ScriptResource(1).axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT 
+src="D:\ryan\classroom\java\JMX\[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files\ScriptResource(2).axd" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT type=text/javascript>
+//<![CDATA[
+function WebForm_OnSubmit() {
+if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+//]]>
+</SCRIPT>
+
+<TABLE class=Framework cellSpacing=0 cellPadding=0 width="100%">
+  <TBODY>
+  <TR>
+    <TD>
+      <DIV id=top>
+      <H1><A class=headermaintitle id=Header1_HeaderTitle 
+      href="http://www.blogjava.net/chengang/">子在川上曰</A></H1>
+      <DIV id=subtitle>　　　　逝者如斯夫不舍昼夜</DIV></DIV>
+      <DIV id=sub>
+      <DIV class=BlogStats>随笔 - 109, 文章 - 0, 评论 - 848, 引用 - 
+  0</DIV></DIV></TD></TR></TBODY></TABLE>
+<TABLE class=Framework cellSpacing=0 cellPadding=0 width="100%">
+  <TBODY>
+  <TR>
+    <TD class=LeftCell rowSpan=2>
+      <DIV id=leftmenu>数据加载中…… </DIV></TD>
+    <TD class=MainCell>
+      <DIV id=main>
+      <DIV class=post>
+      <H2><A id=viewpost1_TitleUrl 
+      href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html">[JMX一步步来]　3、Notification的使用</A> 
+      </H2>
+      <DIV class=postbody>
+      <DIV>
+      <DIV align=center>文/陈刚 from <A 
+      href="http://www.chengang.com.cn/">http://www.chengang.com.cn/</A> at 
+      2005-12-4</DIV>
+      <DIV align=center>　</DIV>
+      <DIV align=center></DIV>
+      <DIV></DIV>
+      <DIV><STRONG>一、简介</STRONG></DIV>
+      <DIV>　</DIV>
+      <DIV></DIV>
+      <DIV>　　Mbean之间的通信是必不可少的，Notification就起到了在Mbean之间沟通桥梁的作用。JMX notification 
+      由四部分组成：</DIV>
+      <DIV></DIV>
+      <UL>
+        <LI>Notification 这个相当于一个信息包，封装了需要传递的信息 
+        <LI>Notification broadcaster　这相当于一个广播器，把消息广播出去 
+        <LI>Notification listerner　这是一个监听器，用于监听广播出来的Notification消息 
+        <LI>Notification filter　这是一个过滤器，过滤掉不需要的Notification消息</LI></UL>
+      <DIV></DIV>
+      <DIV>　&nbsp;Notification broadcaster不需要我们实现，JMX的内部已经有了。Notification 
+      filter一般也很少用。下面的例子主要用到了Notification、Notification listerner。</DIV>
+      <DIV></DIV>
+      <DIV><BR></DIV>
+      <DIV><STRONG>二、实例</STRONG></DIV>
+      <DIV>　</DIV>
+      <DIV></DIV>
+      <DIV>　　在第一篇的Hello中有一个printHello(String whoName)方法，意思根据碰到的是谁来打招呼，比如：</DIV>
+      <DIV>&nbsp;　</DIV>
+      <DIV>　　Jack从对面走过来，说：“hi”</DIV>
+      <DIV>　　我们回之以礼，说：“Hello, jack”</DIV>
+      <DIV>　</DIV>
+      <DIV></DIV>
+      <DIV>　　首先这需要Jack先说一个hi（相应一个操作方法），然后他说的话封装成声波（相当Notification消息包）传递出去。然后我们还要给Jakc装上一个监听器（Hello的耳朵？？^_^），这个监听器将捕捉到Jack的声波语音包，并进行相应处理，即说“Hello, 
+      jack”。</DIV>
+      <DIV>　</DIV>
+      <DIV></DIV>
+      <DIV>　　好，我们看看如何实现的：</DIV>
+      <DIV>　</DIV>
+      <DIV>1、Jack类及其相应的MBean</DIV>
+      <DIV>&nbsp;</DIV>
+      <DIV>&nbsp;&nbsp;&nbsp;我们把Jack写成一个MBean，如下：&nbsp;</DIV>
+      <DIV></DIV>
+      <DIV>
+      <DIV 
+      style="BORDER-RIGHT: 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: 1px solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 1px; BORDER-LEFT: 1px solid; WIDTH: 100%; PADDING-TOP: 1px; BORDER-BOTTOM: 1px solid; HEIGHT: 18px"><PRE>import javax.management.Notification;<BR>import javax.management.NotificationBroadcasterSupport;</PRE><PRE>public class Jack extends NotificationBroadcasterSupport implements JackMBean {<BR>&nbsp;&nbsp;&nbsp; private int seq = 0;<BR>&nbsp;&nbsp;&nbsp; public void hi() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Notification n = new Notification(//创建一个信息包<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "jack.hi",//给这个Notification起个名称<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this, //由谁发出的Notification<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ++seq,//一系列通知中的序列号,可以设任意数值<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.currentTimeMillis(),//发出时间<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Jack");//发出的消息文本<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //发出去<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sendNotification(n);<BR>&nbsp;&nbsp;&nbsp; }<BR>}</PRE></DIV></DIV>
+      <DIV>&nbsp;</DIV>
+      <DIV>&nbsp;说明： </DIV>
+      <UL>
+        <LI>必需继承NotificationBroadcasterSupport 
+        <LI>此类只有一个hi方法，方法只有两句：创建一个Notification消息包，然后将包发出去 
+        <LI>如果你还要在消息包上附加其他数据，Notification还有一个setUserData方法可供使用</LI></UL>
+      <DIV></DIV>
+      <DIV>
+      <DIV>
+      <DIV>2、接下来是他的MBean&nbsp;</DIV></DIV>
+      <DIV>
+      <DIV>
+      <DIV>
+      <DIV 
+      style="BORDER-RIGHT: 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: 1px solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 1px; BORDER-LEFT: 1px solid; WIDTH: 100%; PADDING-TOP: 1px; BORDER-BOTTOM: 1px solid; HEIGHT: 18px"><PRE>public interface JackMBean {<BR>&nbsp;&nbsp;&nbsp; public void hi();<BR>}</PRE></DIV></DIV>
+      <DIV>&nbsp;</DIV>
+      <DIV>3、创建一个Listener，监听到的Notification消息包将由此类负责处理。</DIV></DIV>
+      <DIV>&nbsp; 
+      <DIV>
+      <DIV 
+      style="BORDER-RIGHT: 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: 1px solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 1px; BORDER-LEFT: 1px solid; WIDTH: 100%; PADDING-TOP: 1px; BORDER-BOTTOM: 1px solid; HEIGHT: 18px"><PRE>import javax.management.Notification;<BR>import javax.management.NotificationListener;<BR>public class HelloListener implements NotificationListener {<BR>&nbsp;&nbsp;&nbsp; public void handleNotification(Notification n, Object handback) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("type=" + n.getType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("source=" + n.getSource());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("seq=" + n.getSequenceNumber());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("send time=" + n.getTimeStamp());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("message=" + n.getMessage());</PRE><PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (handback != null) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (handback instanceof Hello) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hello hello = (Hello) handback;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hello.printHello(n.getMessage());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>}</PRE></DIV></DIV>
+      <DIV>&nbsp;</DIV>
+      <DIV>
+      <DIV>4、修改HelloAgent如下（加上了红色的三句）：</DIV>
+      <DIV></DIV>
+      <DIV>
+      <DIV 
+      style="BORDER-RIGHT: 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: 1px solid; PADDING-LEFT: 4px; PADDING-BOTTOM: 1px; BORDER-LEFT: 1px solid; WIDTH: 100%; PADDING-TOP: 1px; BORDER-BOTTOM: 1px solid; HEIGHT: 18px"><PRE>import javax.management.MBeanServer;<BR>import javax.management.MBeanServerFactory;<BR>import javax.management.ObjectName;<BR>import com.sun.jdmk.comm.HtmlAdaptorServer;<BR>public class HelloAgent {<BR>&nbsp;&nbsp;&nbsp; public static void main(String args[]) throws Exception{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MBeanServer server = MBeanServerFactory.createMBeanServer();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectName helloName = new ObjectName("chengang:name=HelloWorld");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hello hello=new Hello();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; server.registerMBean(hello, helloName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectName adapterName = new ObjectName("HelloAgent:name=htmladapter,port=8082");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HtmlAdaptorServer adapter = new HtmlAdaptorServer();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; server.registerMBean(adapter, adapterName);<BR><FONT color=#ff0000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jack jack = new Jack();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; server.registerMBean(jack, new ObjectName("HelloAgent:name=jack"));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jack.addNotificationListener(new HelloListener(), null, hello);<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; adapter.start();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("start.....");<BR>&nbsp;&nbsp;&nbsp; }<BR>}</PRE></DIV></DIV>
+      <DIV>&nbsp;</DIV>
+      <DIV></DIV>
+      <DIV><STRONG>三、运行</STRONG><STRONG>&nbsp;</STRONG></DIV>
+      <DIV></DIV>
+      <DIV>1、先运行HelloAgent启动服务，再打开浏览器输入网址：<A 
+      href="http://localhost:8082/">http://localhost:8082/</A>，出现如下界面。<IMG 
+      style="DISPLAY: block" alt=1133701664014_6541.jpg src="" border=0></DIV>
+      <DIV></DIV>
+      <DIV>&nbsp;</DIV>
+      <DIV>2、　进入“name=jack”项，然后单击“hi”按钮来执行它。这时Eclipse的console视图显示如下：</DIV>
+      <DIV>　</DIV>
+      <DIV><IMG style="DISPLAY: block" alt=1133702044916_7117.jpg src="" 
+      border=0></DIV>
+      <DIV></DIV>
+      <DIV>
+      <DIV></DIV></DIV></DIV></DIV></DIV></DIV>
+      <DIV></DIV>
+      <DIV></DIV>
+      <DIV>
+      <P><STRONG>四、总结</STRONG></P>
+      <P><STRONG>　　</STRONG>Notification和Java的事件模型是一样的，另外如果你买了《Eclipse从入门到精通》，你会发现第22.4节也使用了和Notification和Java的事件模型相同的设计方式。Notification在我们的实际项目中也用到了，象我们现在的给移动做的项目中（基于JMX实现)，分散在各地方的工作站的日志，就是通过Notification方式，把每条产生的日志封装在Notification中实时发回主控服务器的。有机会我会发这一系统的关于日志的设计方案写一下，它实现了对各地工作站的集中的、实时的监控，非常实用。</P>
+      <P><STRONG>作者简介</STRONG></P>
+      <P>陈刚，广西桂林人，著作有《Eclipse从入门到精通》<BR>您可以通过其博客了解更多信息和文章：<A 
+      href="http://www.chengang.com.cn/"><FONT 
+      color=#000033>http://www.chenGang.com.cn</FONT></A> </P></DIV></DIV></DIV>
+      <P class=postfoot>posted on 2006-03-07 15:01 <A 
+      href="http://www.blogjava.net/chengang/">陈刚</A> 阅读(1841) <A 
+      href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html#Post">评论(1)</A> 
+      &nbsp;<A 
+      href="http://www.blogjava.net/chengang/admin/EditPosts.aspx?postid=34083">编辑</A> 
+      &nbsp;<A 
+      href="http://www.blogjava.net/chengang/AddToFavorite.aspx?id=34083">收藏</A> 
+      所属分类: <A 
+      href="http://www.blogjava.net/chengang/category/8015.html">JMX</A> 
+      </P></DIV><IMG height=1 
+      src="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/34083.jpg" 
+      width=1> <!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+<rdf:Description
+rdf:about="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html"
+dc:identifier="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html"
+dc:title="[JMX一步步来]　3、Notification的使用"
+trackback:ping="http://www.blogjava.net/chengang/services/trackbacks/34083.aspx" />
+</rdf:RDF>
+-->
+      <SCRIPT type=text/javascript>
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('AjaxHolder$scriptmanager1', document.getElementById('Form1'));
+Sys.WebForms.PageRequestManager.getInstance()._updateControls(['tAjaxHolder$UpdatePanel1'], [], [], 90);
+//]]>
+</SCRIPT>
+
+      <DIV id=AjaxHolder_UpdatePanel1><A name=pagedcomment></A><A name=评论>
+      <DIV id=comments>
+      <H3>评论</H3>
+      <DIV class=post>
+      <H2><A title="permalink: re: [JMX一步步来]　3、Notification的使用" 
+      href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html#252730">#</A>&nbsp;<A 
+      name=252730></A>re: [JMX一步步来]　3、Notification的使用<A 
+      name=Post></A>&nbsp;&nbsp;<A onclick='return SetReplyAuhor("piper")' 
+      href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html#post">回复</A>&nbsp;&nbsp;<A 
+      title=查看该作者发表过的评论 href="http://www.blogjava.net/comment?author=piper" 
+      target=_blank>更多评论</A> <A 
+      id=AjaxHolder_Comments_CommentList_ctl00_DeleteLink 
+      href="javascript:__doPostBack('AjaxHolder$Comments$CommentList$ctl00$DeleteLink','')"></A>&nbsp;&nbsp;<A 
+      id=AjaxHolder_Comments_CommentList_ctl00_EditLink></A> 
+      </H2>hi,你的文章挺好，就是图片能不能看下,都不显示 
+      <DIV class=postfoot>2009-01-30 11:03 | <A 
+      id=AjaxHolder_Comments_CommentList_ctl00_NameLink target=_blank>piper</A> 
+      </DIV></DIV></DIV>
+      <STYLE>TD {
+	FONT-SIZE: 12px
+}
+.commentTextBox {
+	FONT-SIZE: 13px; FONT-FAMILY: Verdana
+}
+</STYLE>
+<!--Beging Temp Save-->
+      <STYLE>.userData {
+	BEHAVIOR: url(#default#userdata)
+}
+</STYLE>
+
+      <DIV class=userData id=CommentsPersistDiv></DIV>
+      <SCRIPT type=text/javascript>
+function pageLoad()
+{
+    Sys.WebForms.PageRequestManager.getInstance().add_initializeRequest(handleInitializeRequest);
+    //Sys.WebForms.PageRequestManager.getInstance().add_endRequest(handleEndRequest);
+}
+
+function handleInitializeRequest(sender, args)
+{
+    var prm = Sys.WebForms.PageRequestManager.getInstance();
+    var eid = args.get_postBackElement().id;
+    if (eid.indexOf("DeleteLink")>0) 
+    {
+       args.get_postBackElement().innerHTML = "<font color='red'>正在删除...</font>";         
+    }    
+    else if (eid.indexOf("btnSubmit")>0) 
+    {
+       document.getElementById("AjaxHolder_PostComment_ltSubmitMsg").innerHTML="正在提交...";
+       document.getElementById("AjaxHolder_PostComment_btnSubmit").disabled = true;       
+    }   
+    else if(eid.indexOf("refreshList")>0)
+    {
+        document.getElementById("AjaxHolder_PostComment_refreshList").innerHTML="<font color='red'>正在刷新...</font>";
+    }
+   
+}	
+
+function TempSave(ElementID)
+{
+	try
+	{
+	CommentsPersistDiv.setAttribute("CommentContent",document.getElementById(ElementID).value);
+	CommentsPersistDiv.save("CommentXMLStore");
+	}
+	catch(ex)
+	{
+	}
+	
+}
+function Restore(ElementID)
+{
+	CommentsPersistDiv.load("CommentXMLStore");
+	document.getElementById(ElementID).value=CommentsPersistDiv.getAttribute("CommentContent");
+}	
+			
+			
+</SCRIPT>
+<!--Ene TempSave-->
+      <DIV id=divRefreshComments 
+      style="FONT-SIZE: 12px; MARGIN-BOTTOM: 5px; MARGIN-RIGHT: 10px; TEXT-ALIGN: right"><A 
+      href="http://news.cnblogs.com/">IT新闻</A>&nbsp;&nbsp;<A 
+      href="http://www.blogjava.net/RequireRegister.aspx">新用户注册</A>&nbsp;&nbsp;<A 
+      id=AjaxHolder_PostComment_refreshList 
+      href="javascript:__doPostBack('AjaxHolder$PostComment$refreshList','')">刷新评论列表</A>&nbsp;&nbsp;</DIV>
+      <DIV class=commentform><SPAN id=AjaxHolder_PostComment_ltSubmitMsg 
+      style="COLOR: red"></SPAN><BR><A name=Feedback></A>
+      <TABLE cellSpacing=1 cellPadding=1 border=0>
+        <TBODY>
+        <TR>
+          <TD colSpan=3 height=5></TD></TR>
+        <TR>
+          <TD width=75></TD>
+          <TD></TD>
+          <TD></TD></TR>
+        <TR>
+          <TD width=55>标题</TD>
+          <TD><INPUT class=commenttb id=AjaxHolder_PostComment_tbTitle 
+            style="WIDTH: 320px" value="re: [JMX一步步来]　3、Notification的使用" 
+            name=AjaxHolder$PostComment$tbTitle></TD>
+          <TD><SPAN id=AjaxHolder_PostComment_RequiredFieldValidator1 
+            style="VISIBILITY: hidden; COLOR: red">请输入标题</SPAN></TD></TR>
+        <TR>
+          <TD>姓名</TD>
+          <TD><INPUT class=commenttb id=AjaxHolder_PostComment_tbName 
+            style="WIDTH: 320px" name=AjaxHolder$PostComment$tbName></TD>
+          <TD><SPAN id=AjaxHolder_PostComment_RequiredFieldValidator2 
+            style="VISIBILITY: hidden; COLOR: red">请输入你的姓名</SPAN></TD></TR>
+        <TR>
+          <TD>主页</TD>
+          <TD><INPUT class=commenttb id=AjaxHolder_PostComment_tbUrl 
+            style="WIDTH: 320px" name=AjaxHolder$PostComment$tbUrl></TD>
+          <TD><FONT face=宋体></FONT></TD></TR>
+        <TR>
+          <TD align=left colSpan=3>
+            <TABLE class=CommentForm id=AjaxHolder_PostComment_tbCaptchaImage 
+            cellSpacing=0 cellPadding=0 border=0>
+              <TBODY>
+              <TR>
+                <TD colSpan=3><SPAN 
+                  id=AjaxHolder_PostComment_Requiredfieldvalidator4 
+                  style="DISPLAY: none; COLOR: red">请输入验证码</SPAN> <SPAN 
+                  id=AjaxHolder_PostComment_lblImage 
+                  style="FONT-WEIGHT: bold; COLOR: red"></SPAN></TD></TR>
+              <TR>
+                <TD width=78>验证码</TD>
+                <TD><INPUT id=AjaxHolder_PostComment_CodeNumberTextBox 
+                  name=AjaxHolder$PostComment$CodeNumberTextBox>*&nbsp;&nbsp;<IMG 
+                  src="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/JpegImage.jpg"></TD>
+                <TD align=left></TD></TR></TBODY></TABLE></TD></TR>
+        <TR>
+          <TD colSpan=3>内容(请不要发表任何与政治相关的内容) <SPAN 
+            id=AjaxHolder_PostComment_RequiredFieldValidator3 
+            style="VISIBILITY: hidden; COLOR: red">请输入评论内容</SPAN><BR><TEXTAREA class=commentTextBox id=AjaxHolder_PostComment_tbComment onkeydown="ctlent(event,'AjaxHolder_PostComment_tbComment')" style="WIDTH: 480px; HEIGHT: 220px" name=AjaxHolder$PostComment$tbComment rows=10 cols=50></TEXTAREA></TD></TR>
+        <TR>
+          <TD colSpan=3><SPAN id=AjaxHolder_PostComment_Message 
+            style="COLOR: red"></SPAN></TD>
+        <TR>
+          <TD colSpan=3><INPUT id=AjaxHolder_PostComment_chkRemember 
+            tabIndex=-1 type=checkbox CHECKED 
+            name=AjaxHolder$PostComment$chkRemember><LABEL 
+            for=AjaxHolder_PostComment_chkRemember>Remember Me?</LABEL></TD></TR>
+        <TR>
+          <TD height=23><INPUT class=commentButton id=AjaxHolder_PostComment_btnSubmit onclick="TempSave('AjaxHolder_PostComment_tbComment');WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;AjaxHolder$PostComment$btnSubmit&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" type=submit value=提交 name=AjaxHolder$PostComment$btnSubmit> 
+          </TD>
+          <TD colSpan=2 height=23>&nbsp; <A id=AjaxHolder_PostComment_lnkLogin 
+            href="http://www.blogjava.net/login.aspx?ReturnURL=http://www.blogjava.net/chengang/archive/2006/03/07/34083.html&amp;SourceURL=/chengang/archive/2006/03/07/34083.html">登录</A>&nbsp;&nbsp;<A 
+            id=AjaxHolder_PostComment_linkLoginComment 
+            onclick="if(document.getElementById('AjaxHolder_PostComment_tbComment').value != '') return confirm('未提交的评论内容将会丢失, 你真的要进入高级评论吗?');" 
+            href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html?login=1#Post">使用高级评论</A>&nbsp;&nbsp;<A 
+            href="http://www.blogjava.net/RequireRegister.aspx">新用户注册</A>&nbsp;&nbsp;<A 
+            href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html#Top">返回页首</A>&nbsp;&nbsp;<A 
+            id=AjaxHolder_PostComment_lbRestore 
+            onclick="Restore('AjaxHolder_PostComment_tbComment'); return false;" 
+            href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html#Post">恢复上次提交</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+          </TD></TR>
+        <TR>
+          <TD colSpan=3><LABEL 
+        class=CtrlEnter>[使用Ctrl+Enter键可以直接提交]</LABEL></TD></TR>
+        <TR>
+          <TD colSpan=3></TD></TR>
+        <TR>
+          <TD colSpan=3 height=5>&nbsp;</TD></TR>
+        <TR>
+          <TD colSpan=3 height=5></TD></TR>
+        <TR>
+          <TD colSpan=3 height=1>&nbsp;</TD></TR>
+        <TR>
+          <TD colSpan=3><BR>推荐图书：<BR>《<A 
+            href="http://book.cnblogs.com/zt/outworkshop/" 
+            target=_blank>走出软件作坊</A>》、《<A 
+            href="http://book.cnblogs.com/zt/wtjs/" 
+            target=_blank>悟透JavaScript</A>》、《<A 
+            href="http://book.cnblogs.com/zt/head_first_design_patterns/" 
+            target=_blank>Head First 设计模式</A>》</TD></TR>
+        <TR>
+          <TD colSpan=3 height=5>
+            <DIV id=divRelativePosts>相关文章: 
+            <UL style="MARGIN-TOP: 0px; PADDING-LEFT: 0px">
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl01_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34091.html">[JMX一步步来]　9、基于JBoss来写MBean</A> 
+
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl02_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34089.html">[JMX一步步来]　8、编写程序来连接MBean</A> 
+
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl03_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34088.html">[JMX一步步来]　7、用JDK5.0的JConsole来连接MBean</A> 
+
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl04_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34087.html">[JMX一步步来]　6、模型Bean：Model 
+              Bean</A> 
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl05_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34086.html">[JMX一步步来]　5、用Apache的commons-modeler来辅助开发JMX</A> 
+
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl06_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34084.html">[JMX一步步来]　4、动态MBean：DynamicMBean</A> 
+
+              <LI style="DISPLAY: none; LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl07_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html">[JMX一步步来]　3、Notification的使用</A> 
+
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl08_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34082.html">[JMX一步步来]　2、JMX简介</A> 
+
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl09_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34078.html">jboss中JMX的连接与Mbean的获取</A> 
+
+              <LI style="LIST-STYLE-TYPE: none"><A 
+              id=AjaxHolder_PostComment_ctl06_RelativePostsList_ctl10_Hyperlink1 
+              href="http://www.blogjava.net/chengang/archive/2006/03/07/34061.html">[JMX一步步来]　1、JMX的Hello 
+              World</A> </LI></UL></DIV></TD></TR>
+        <TR>
+          <TD colSpan=3>相关链接:
+            <SCRIPT type=text/javascript>
+	function GetMeta(ametaName){
+	var METAs = document.getElementsByTagName("meta"); 
+	for (var i=0; i<METAs.length; i++) { 
+	if(METAs[i].name.toLowerCase()==ametaName){return (METAs[i].content);}
+	};
+	return "";
+	}
+	var title = document.title;
+	document.write("<div id=\"a4_ads_output\">");
+	document.write("<script type='text/javascript' src='http://a4.yeshj.com/adwords/EN017?num=5&title="+ encodeURIComponent(title) +"&tag="+ encodeURIComponent(GetMeta("keywords")) +"'></scri"+"pt>");
+	document.write("</div>");
+	</SCRIPT>
+          </TD></TR>
+        <TR>
+          <TD colSpan=3 height=5>网站导航:
+            <DIV id=blogsite><A 
+            href="http://www.cnblogs.com/">博客园</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            <A href="http://www.blogjava.net/">BlogJava</A>&nbsp;&nbsp; <A 
+            href="http://www.cnweblog.com/">博客生活</A>&nbsp;&nbsp; <A 
+            href="http://www.cnitblog.com/">IT博客网</A>&nbsp;&nbsp; <A 
+            href="http://www.cppblog.com/">C++博客</A>&nbsp;&nbsp; <A 
+            href="http://www.phpweblog.net/">PHP博客</A>&nbsp;&nbsp; <A 
+            href="http://space.cnblogs.com/">博客园社区</A> <BR><A 
+            href="http://www.manageblog.net/">管理博客</A>&nbsp;&nbsp; <A 
+            href="http://www.teachblog.net/">教师博客</A>&nbsp;&nbsp;&nbsp;&nbsp; <A 
+            href="http://www.astroblog.cn/">天文博客</A>&nbsp;&nbsp; <A 
+            href="http://www.cnautoblog.com/">汽车博客</A>&nbsp;&nbsp; <A 
+            href="http://www.zuqiublog.com/">足球博客</A>&nbsp;&nbsp; <A 
+            href="http://www.gupiaoblog.com/">股票博客</A>&nbsp;&nbsp; <A 
+            href="http://www.etronblog.com/">电子博客</A>&nbsp;&nbsp;<A 
+            href="http://www.blogjava.net/chengang/archive/2006/03/07/34083.html?opt=admin">管理</A> 
+            </DIV></TD></TR>
+        <TR>
+          <TD colSpan=3></TD></TR></TBODY></TABLE></DIV>
+      <DIV id=AjaxHolder_PostComment_ValidationSummary1 
+      style="DISPLAY: none; COLOR: red"></DIV></DIV></DIV></TD></TR>
+  <TR>
+    <TD class=FooterCell>
+      <P id=footer>Powered by: <BR><A id=Footer1_Hyperlink3 
+      style="FONT-SIZE: 12px; FONT-FAMILY: Verdana" 
+      href="http://www.blogjava.net/" name=Hyperlink1>BlogJava</A> <BR>Copyright 
+      © 陈刚 </P></TD></TR></TBODY></TABLE>
+<DIV id=lefttemp style="DISPLAY: none">
+<H3>导航</H3>
+<UL>
+  <LI>
+  <LI><A id=MyLinks1_MyHomeLink href="http://www.blogjava.net/chengang/">首页</A> 
+  <LI><A id=MyLinks1_NewPostLink 
+  href="http://www.blogjava.net/chengang/admin/EditPosts.aspx?opt=1">新随笔</A> 
+  <LI><A id=MyLinks1_ContactLink accessKey=9 
+  href="http://www.blogjava.net/chengang/contact.aspx?id=1">联系</A> 
+  <LI><A id=MyLinks1_XMLLink href="http://www.blogjava.net/chengang/rss"><IMG 
+  style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+  alt="RSS 2.0 Feed" 
+  src="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/xml.gif"></A><A 
+  id=MyLinks1_Syndication href="http://www.blogjava.net/chengang/rss">聚合</A> 
+  <LI><A id=MyLinks1_Admin 
+  href="http://www.blogjava.net/chengang/admin/EditPosts.aspx">管理</A> </LI></UL>
+<H3>随笔分类<SPAN style="FONT-WEIGHT: normal; FONT-SIZE: 11px">(114)</SPAN></H3>
+<UL>
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl01_Link 
+  href="http://www.blogjava.net/chengang/category/8012.html">Eclipse(16)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl01_RssLink 
+  title="Subscribe to Eclipse(16)" 
+  href="http://www.blogjava.net/chengang/category/8012.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl02_Link 
+  href="http://www.blogjava.net/chengang/category/8707.html">Eclipse从入门到精通(15)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl02_RssLink 
+  title="Subscribe to Eclipse从入门到精通(15)" 
+  href="http://www.blogjava.net/chengang/category/8707.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl03_Link 
+  href="http://www.blogjava.net/chengang/category/28246.html">Jakarta 
+  Commons(2)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl03_RssLink 
+  title="Subscribe to Jakarta Commons(2)" 
+  href="http://www.blogjava.net/chengang/category/28246.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl04_Link 
+  href="http://www.blogjava.net/chengang/category/8014.html">Java(11)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl04_RssLink 
+  title="Subscribe to Java(11)" 
+  href="http://www.blogjava.net/chengang/category/8014.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl05_Link 
+  href="http://www.blogjava.net/chengang/category/12967.html">jBPM(5)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl05_RssLink 
+  title="Subscribe to jBPM(5)" 
+  href="http://www.blogjava.net/chengang/category/12967.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl06_Link 
+  href="http://www.blogjava.net/chengang/category/8015.html">JMX(10)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl06_RssLink 
+  title="Subscribe to JMX(10)" 
+  href="http://www.blogjava.net/chengang/category/8015.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl07_Link 
+  href="http://www.blogjava.net/chengang/category/23634.html">Linux(6)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl07_RssLink 
+  title="Subscribe to Linux(6)" 
+  href="http://www.blogjava.net/chengang/category/23634.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl08_Link 
+  href="http://www.blogjava.net/chengang/category/20990.html">Rails&amp;Ruby(24)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl08_RssLink 
+  title="Subscribe to Rails&amp;Ruby(24)" 
+  href="http://www.blogjava.net/chengang/category/20990.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl09_Link 
+  href="http://www.blogjava.net/chengang/category/8414.html">Test(4)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl09_RssLink 
+  title="Subscribe to Test(4)" 
+  href="http://www.blogjava.net/chengang/category/8414.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl10_Link 
+  href="http://www.blogjava.net/chengang/category/8013.html">技术其他(11)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl10_RssLink 
+  title="Subscribe to 技术其他(11)" 
+  href="http://www.blogjava.net/chengang/category/8013.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl11_Link 
+  href="http://www.blogjava.net/chengang/category/14925.html">数据结构(2)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl11_RssLink 
+  title="Subscribe to 数据结构(2)" 
+  href="http://www.blogjava.net/chengang/category/14925.html/rss">(rss)</A> 
+  <LI><A id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl12_Link 
+  href="http://www.blogjava.net/chengang/category/8413.html">项目日记(8)</A><A 
+  id=SingleColumn1_Categories_CatList_ctl00_LinkList_ctl12_RssLink 
+  title="Subscribe to 项目日记(8)" 
+  href="http://www.blogjava.net/chengang/category/8413.html/rss">(rss)</A> 
+</LI></UL>
+<SCRIPT language=JavaScript>
+function SearchGoogle(key,evt,site)
+		{
+			if(evt.keyCode==13 || evt.keyCode==0 || evt.type =='click')
+			{
+				key.focus();
+				var keystr = encodeURIComponent(key.value);
+				url = "http://www.google.com/search?q=";
+				url = url+keystr;
+				url += "&ie=UTF-8&oe=GB2312&hl=zh-CN&domains="+site+"&sitesearch="+site;
+				window.location=url;
+				return false;
+			}
+		}
+</SCRIPT>
+
+<H3>搜索</H3>
+<UL>
+  <LI>
+  <LI><INPUT id=q 
+  onkeydown="return SearchGoogle(document.getElementById('q'),event,'www.blogjava.net/chengang')" 
+  style="WIDTH: 130px" name=q>&nbsp;<INPUT onclick="SearchGoogle(document.getElementById('q'),event,'www.blogjava.net/chengang')" type=button value=搜索 name=sa> 
+  </LI></UL>
+<H3>积分与排名</H3>
+<UL>
+  <LI>积分 - 316662 
+  <LI>排名 - 21 </LI></UL>
+<H3>最新评论 <A id=SingleColumn1__31deb5c_RSSHyperlink1 
+href="http://www.blogjava.net/chengang/CommentsRSS.aspx"><IMG 
+style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" 
+src="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/xml.gif"></A></H3>
+<DIV class=RecentComment>
+<UL>
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1__31deb5c_CommentList_ctl01_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2009/02/02/106226.html#253004">1.&nbsp;re: 
+  急救啊</A> 
+  <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--brainycheng@gmail.com 
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1__31deb5c_CommentList_ctl02_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2009/01/30/34083.html#252730">2.&nbsp;re: 
+  [JMX一步步来]　3、Notification的使用</A> 
+  <LI style="WORD-BREAK: break-all">hi,你的文章挺好，就是图片能不能看下,都不显示 
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--piper 
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1__31deb5c_CommentList_ctl03_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2009/01/15/57986.html#251401">3.&nbsp;re: 
+  jBPM开发入门指南(1)</A> 
+  <LI style="WORD-BREAK: break-all">评论内容较长,点击标题查看 
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--shazhenzhong 
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1__31deb5c_CommentList_ctl04_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2009/01/11/70069.html#250872">4.&nbsp;re: 
+  jBPM开发入门指南(5) [未登录]</A> 
+  <LI style="WORD-BREAK: break-all">JBPM与Ibatis结合么样弄啊? 
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--Simple 
+  <LI style="WORD-BREAK: break-all"><A 
+  id=SingleColumn1__31deb5c_CommentList_ctl05_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2009/01/06/108666.html#250117">5.&nbsp;re: 
+  怎么成为Eclipse插件开发的高手</A> 
+  <LI style="WORD-BREAK: break-all">我局的你说的就是个6！ 
+  <LI style="MARGIN-RIGHT: 4px; TEXT-ALIGN: right">--偶不做java很多年 </LI></UL></DIV>
+<H3>阅读排行榜</H3>
+<DIV class=RecentComment>
+<UL style="WORD-BREAK: break-all">
+  <LI><A id=SingleColumn1__3df760b_TopList_ctl01_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2006/07/13/57986.html">1.&nbsp;jBPM开发入门指南(1)(25553)</A> 
+
+  <LI><A id=SingleColumn1__3df760b_TopList_ctl02_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2006/04/24/42869.html">2.&nbsp;《Eclipse从入门到精通》中软件的下载地址（2007-12-16更新）(21293)</A> 
+
+  <LI><A id=SingleColumn1__3df760b_TopList_ctl03_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2006/08/23/65346.html">3.&nbsp;jBPM开发入门指南(3) 
+  (19054)</A> 
+  <LI><A id=SingleColumn1__3df760b_TopList_ctl04_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2006/04/24/42868.html">4.&nbsp;《Eclipse从入门到精通》常见问题解答 
+  (18599)</A> 
+  <LI><A id=SingleColumn1__3df760b_TopList_ctl05_Hyperlink1 
+  href="http://www.blogjava.net/chengang/archive/2006/09/16/70069.html">5.&nbsp;jBPM开发入门指南(5) 
+  (18110)</A> </LI></UL></DIV></DIV>
+<SCRIPT type=text/javascript>
+//<![CDATA[
+var Page_ValidationSummaries =  new Array(document.getElementById("AjaxHolder_PostComment_ValidationSummary1"));
+var Page_Validators =  new Array(document.getElementById("AjaxHolder_PostComment_RequiredFieldValidator1"), document.getElementById("AjaxHolder_PostComment_RequiredFieldValidator2"), document.getElementById("AjaxHolder_PostComment_Requiredfieldvalidator4"), document.getElementById("AjaxHolder_PostComment_RequiredFieldValidator3"));
+//]]>
+</SCRIPT>
+
+<SCRIPT type=text/javascript>
+//<![CDATA[
+var AjaxHolder_PostComment_RequiredFieldValidator1 = document.all ? document.all["AjaxHolder_PostComment_RequiredFieldValidator1"] : document.getElementById("AjaxHolder_PostComment_RequiredFieldValidator1");
+AjaxHolder_PostComment_RequiredFieldValidator1.controltovalidate = "AjaxHolder_PostComment_tbTitle";
+AjaxHolder_PostComment_RequiredFieldValidator1.errormessage = "请输入标题";
+AjaxHolder_PostComment_RequiredFieldValidator1.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AjaxHolder_PostComment_RequiredFieldValidator1.initialvalue = "";
+var AjaxHolder_PostComment_RequiredFieldValidator2 = document.all ? document.all["AjaxHolder_PostComment_RequiredFieldValidator2"] : document.getElementById("AjaxHolder_PostComment_RequiredFieldValidator2");
+AjaxHolder_PostComment_RequiredFieldValidator2.controltovalidate = "AjaxHolder_PostComment_tbName";
+AjaxHolder_PostComment_RequiredFieldValidator2.errormessage = "请输入你的姓名";
+AjaxHolder_PostComment_RequiredFieldValidator2.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AjaxHolder_PostComment_RequiredFieldValidator2.initialvalue = "";
+var AjaxHolder_PostComment_Requiredfieldvalidator4 = document.all ? document.all["AjaxHolder_PostComment_Requiredfieldvalidator4"] : document.getElementById("AjaxHolder_PostComment_Requiredfieldvalidator4");
+AjaxHolder_PostComment_Requiredfieldvalidator4.controltovalidate = "AjaxHolder_PostComment_CodeNumberTextBox";
+AjaxHolder_PostComment_Requiredfieldvalidator4.errormessage = "请输入验证码";
+AjaxHolder_PostComment_Requiredfieldvalidator4.display = "Dynamic";
+AjaxHolder_PostComment_Requiredfieldvalidator4.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AjaxHolder_PostComment_Requiredfieldvalidator4.initialvalue = "";
+var AjaxHolder_PostComment_RequiredFieldValidator3 = document.all ? document.all["AjaxHolder_PostComment_RequiredFieldValidator3"] : document.getElementById("AjaxHolder_PostComment_RequiredFieldValidator3");
+AjaxHolder_PostComment_RequiredFieldValidator3.controltovalidate = "AjaxHolder_PostComment_tbComment";
+AjaxHolder_PostComment_RequiredFieldValidator3.errormessage = "请输入评论内容";
+AjaxHolder_PostComment_RequiredFieldValidator3.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+AjaxHolder_PostComment_RequiredFieldValidator3.initialvalue = "";
+var AjaxHolder_PostComment_ValidationSummary1 = document.all ? document.all["AjaxHolder_PostComment_ValidationSummary1"] : document.getElementById("AjaxHolder_PostComment_ValidationSummary1");
+AjaxHolder_PostComment_ValidationSummary1.showmessagebox = "True";
+AjaxHolder_PostComment_ValidationSummary1.showsummary = "False";
+//]]>
+</SCRIPT>
+
+<SCRIPT type=text/javascript>
+<!--
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+// -->
+</SCRIPT>
+
+<SCRIPT type=text/javascript>
+//<![CDATA[
+
+document.getElementById('AjaxHolder_PostComment_ValidationSummary1').dispose = function() {
+    Array.remove(Page_ValidationSummaries, document.getElementById('AjaxHolder_PostComment_ValidationSummary1'));
+}
+Sys.Application.initialize();
+
+document.getElementById('AjaxHolder_PostComment_RequiredFieldValidator1').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('AjaxHolder_PostComment_RequiredFieldValidator1'));
+}
+
+document.getElementById('AjaxHolder_PostComment_RequiredFieldValidator2').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('AjaxHolder_PostComment_RequiredFieldValidator2'));
+}
+
+document.getElementById('AjaxHolder_PostComment_Requiredfieldvalidator4').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('AjaxHolder_PostComment_Requiredfieldvalidator4'));
+}
+
+document.getElementById('AjaxHolder_PostComment_RequiredFieldValidator3').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('AjaxHolder_PostComment_RequiredFieldValidator3'));
+}
+//]]>
+</SCRIPT>
+</FORM>
+<SCRIPT src="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/ShowHidden.js" 
+type=text/javascript></SCRIPT>
+<SPAN style="DISPLAY: none">
+<SCRIPT language=javascript 
+src="[JMX一步步来]　3、Notification的使用 - 子在川上曰 - BlogJava_files/click.htm"></SCRIPT>
+</SPAN></BODY></HTML>

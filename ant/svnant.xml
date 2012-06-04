@@ -1,0 +1,24 @@
+<project default="default" basedir="." >
+  <path id="ant.libs" >
+    <fileset dir="lib">
+      <include name="svnant.jar" />
+      <include name="svnClientAdapter.jar" />
+      <include name="svnjavahl.jar" />
+    </fileset>
+  </path>
+  <taskdef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="ant.libs" />
+  <target name="default" >
+    <svn>
+      <info target="." >
+      </info>
+    </svn>
+    <echo message="${svn.info.url}" />
+  </target>
+  <target name="exec" >
+    <exec executable="svn" failedonerror="false">
+      <arg value="del" />
+      <arg value="*.abc"  />
+      <arg value="*.xml"  />
+    </exec>
+  </target>
+</project>

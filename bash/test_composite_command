@@ -1,0 +1,12 @@
+#!/bin/sh
+#test if
+if [($1==null)]
+then
+		echo please enter arguments
+elif [($1==1)]
+then
+		echo you input $1
+else
+		echo u have not input 1
+fi
+

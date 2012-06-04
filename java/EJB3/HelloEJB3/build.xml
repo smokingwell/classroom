@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<project name="JBoss" default="run.HelloWorldClient" basedir=".">
+	<property environment="env" />
+	<property name="jboss.home" value="${env.JBOSS_HOME}" />
+	<property name="classes.dir" value="build/classes" />
+
+	<path id="classpath">
+		<fileset dir="${jboss.home}/client">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${classes.dir}" />
+	</path>
+
+	<target name="clean">
+		<delete file="${basedir}/HelloEJB.jar" />
+		<delete file="${jboss.home}/server/default/deploy/HelloEJB.jar" />
+		<delete file="${basedir}/ShoppingCart.jar" />
+		<delete file="${jboss.home}/server/default/deploy/ShoppingCart.jar" />
+		<delete file="${basedir}/EntityBeanSample.jar" />
+		<delete file="${jboss.home}/server/default/deploy/EntityBeanSample.jar" />
+		<delete file="${basedir}/MDBSample.jar" />
+		<delete file="${jboss.home}/server/default/deploy/MDBSample.jar" />
+	</target>
+
+	<target name="ejbjar" depends="clean">
+		<jar jarfile="HelloEJB.jar">
+			<fileset dir="${classes.dir}">
+				<include name="ejb3/example/session/stateless/*.class" />
+			</fileset>
+		</jar>
+		<jar jarfile="ShoppingCart.jar">
+			<fileset dir="${classes.dir}">
+				<include name="ejb3/example/session/stateful/*.class" />
+			</fileset>
+		</jar>
+
+		<jar jarfile="EntityBeanSample.jar">
+			<fileset dir="${classes.dir}">
+				<include name="ejb3/example/simpleentity/*.class" />
+				<include name="META-INF/*.xml" />
+			</fileset>
+		</jar>
+		
+		<jar jarfile="MDBSample.jar">
+			<fileset dir="${classes.dir}">
+				<include name="ejb3/example/message/*.class" />
+				<!--include name="META-INF/*.xml" /-->
+			</fileset>
+		</jar>
+		
+		<copy file="HelloEJB.jar " todir="${jboss.home}/server/default/deploy" />
+		<copy file="ShoppingCart.jar " todir="${jboss.home}/server/default/deploy" />
+		<copy file="EntityBeanSample.jar " todir="${jboss.home}/server/default/deploy" />
+		<copy file="MDBSample.jar " todir="${jboss.home}/server/default/deploy" />
+	</target>
+
+	<target name="run.HelloWorldClient" depends="ejbjar">
+		<java classname="ejb3.example.client.HelloClient" fork="yes" dir=".">
+			<classpath refid="classpath" />
+		</java>
+		<java classname="ejb3.example.client.ShoppingCartClient" fork="yes" dir=".">
+			<classpath refid="classpath" />
+		</java>
+		<java classname="ejb3.example.client.EntityBeanClient" fork="yes" dir=".">
+			<classpath refid="classpath" />
+		</java>
+		<java classname="ejb3.example.client.HelloMDBCosumerClient" fork="yes" dir=".">
+			<classpath refid="classpath" />
+		</java>
+		<java classname="ejb3.example.client.HelloMDBProducerClient" fork="yes" dir=".">
+				<classpath refid="classpath" />
+		</java>
+		
+	</target>
+</project>

@@ -1,0 +1,347 @@
+<html>
+		<head>
+				<title> :-)</title>
+<script type="text/javascript" >
+/*************************************
+		 url:http://hq.sinajs.cn/list=sh600151,sz000830,s_sh000001,s_sz399001,s_sz399106
+		 
+		 output:var hq_str_sh600151="航天机电, 12.20,11.97,11.89,12.42,11.75,11.89,11.90,12903382,156697209,17400,11.89,30500,11.88,4299,11.86,10997,11.85,1200,11.84,2100,11.90,1700,11.91,1800,11.92,8500,11.93,7000,11.94,2008-03-26,15:05:31"; var hq_str_sz000830="鲁西化工, 7.82,7.77,7.52,7.88,7.43,7.51,7.52,16211922,123462782.69,31700,7.51,88586,7.50,14400,7.49,24300,7.48,5200,7.47,176568,7.52,24300,7.53,69300,7.54,33742,7.55,4600,7.56,2008-03-26,15:05:53"; var hq_str_s_sh000001="上证指数,3606.857,-22.762,-0.63,462518,7050784"; var hq_str_s_sz399001="深证成指,13489.091,61.806,0.46,3669791,924597"; var hq_str_s_sz399106="深证综指,1153.642,3.173,0.28,21079093,3418564";
+*************************************/
+	//custome object
+	//OneStock
+	var arCodeList=new Array("600151", "000830", "000001");
+	var arFilterRegister=new Array(new Array("600151",500), new Array("000830", 300));
+	var DEFAULT_BBFILTER_SIZE=1000;
+	function OneStock(){
+		this.isExponent;
+		
+		this.name="";
+		this.code="";
+		
+		this.openPrice=0;
+		this.maxPrice=0;
+		this.minPrice=0;
+		this.price=0;
+		this.changePercentage=0;
+
+		this.saleBill=new Array(5);
+		this.buyBill=new Array(5);
+		
+		this.dealL=0;//成交量万手
+		this.dealE=0;//成交额亿元
+		
+		this.lastClosePrice=0;
+	}
+
+	
+	//function	
+	function scratchSinaRawData(arInputCode){
+		var ret = new Array();
+		var arTransferCode=new Array();
+		var code=document.getElementById("scratcher");
+		if(!code) return;
+		document.body.removeChild(code);
+		code=document.createElement("script");
+		//code.src="http://hq.sinajs.cn/list=sh601006";
+		var scratcher_url="";
+		for(var i=0; i < arInputCode.length; i++){
+			if(arInputcode[i]=="000001"){
+				arTransferCode="s_sh000001";
+			}else if(arInputcode[i]=="399106"){
+				arTransferCode="s_sz399106";
+			}else if( arInputCode[i].startsWith("6")){
+				arTransferCode="sh399106";			
+			}else if( arInputCode[i].startsWith("0")){
+				arTransferCode="sz399106";			
+			}else{
+				alert("error detected, error stock code :"+ arInputCode[i]");
+				return null;
+			}
+		}
+		
+		var l=arTransferCode.length;
+		if(l!=arInputCode.length){
+			alert("error detected, in scratchSinaRawData function.");
+			return null;
+		}
+		scratcher_url="http://hq.sinajs.cn/list=";
+		for(var i=0;i < l;i++){
+			scratcher_url+=arTransferCode[i]+",";
+		}
+		alert(scratcher_url);
+		code.src=scratcher_url;
+		code.id="scratcher";
+		code.charset="gb2312";
+		document.body.appendChild(code);
+		for(var i=0; i < l;i++){
+			eval("ret.add(hq_str_"+arTransferCode[i]+")");
+		}
+		
+		alert(ret.length);		 	
+		return ret;
+	}
+	
+	
+	function getBBFilter(code){
+		var ret=DEFAULT_BBFILTER_SIZE;
+		for(var i=0; i< arFilterRegister.length;i++){
+			if(arFilterRegister[i][0]==code && arFilterRegister[i][1]>0){
+				return arFilterRegister[i][1];
+			}
+		}
+		return ret;
+	}
+	
+	function readAllStockData(arRawData, arCodeList) {
+		var ret = new Array();
+				
+		var l=arRawData.length;
+		if(l!=arCodeList.length){
+			alert("error detected, rawData item:" + l + " != code item number:" +  arCodeList.length );
+			return null;
+		}		
+		for(var i=0; i< split.length;i++){
+			ret.add(paseOneStockData(split[i], arCodeList[i]));
+		}		
+		return ret;
+	}
+		
+	function parseOneStockData(singleRawData, stockCode) {
+		var ret = new OneStock();		
+		var split= singleRowData.split(",");
+		var l=split.length;
+		if(l==31){
+			l.isExponent=0;//[股票]
+			l.name=split[0];//
+			l.code=stockCode;
+			l.openPrice=split[1];
+			l.lastCloseprice=split[2];
+			l.price=split[3];
+			l.maxPrice=split[4];
+			l.minPrice=split[5];
+			l.dealL=split[8]/1000000;
+			l.dealE=split[9]/100000000;
+			l.buyBill[0][1]=split[10];
+			l.buyBill[0][0]=split[11];
+			l.buyBill[1][1]=split[12];
+			l.buyBill[1][0]=split[13];
+			l.buyBill[2][1]=split[14];
+			l.buyBill[2][0]=split[15];
+			l.buyBill[3][1]=split[16];
+			l.buyBill[3][0]=split[17];
+			l.buyBill[4][1]=split[18];
+			l.buyBill[4][0]=split[19];
+			l.saleBill[0][1]=split[20];
+			l.saleBill[0][0]=split[21];
+			l.saleBill[1][1]=split[22];
+			l.saleBill[1][0]=split[23];
+			l.saleBill[2][1]=split[24];
+			l.saleBill[2][0]=split[25];
+			l.saleBill[3][1]=split[26];
+			l.saleBill[3][0]=split[27];
+			l.saleBill[4][1]=split[28];
+			l.saleBill[4][0]=split[29];
+			
+		}else if(l == 6){
+			l.isExponent=1;//[指数]
+			l.name=split[0];
+			l.price=split[1];//actually current price means current exponent counts
+			l.changePercentage=split[2];
+			//split[3]为当前价格,忽略
+			l.dealE=split[4]/10000;//成交量(万手)
+			l.dealL=split[5]/10000;//成交额, 亿元单位
+		}else{
+			alert("error detected, data length:"+l+"data:"+singleRawData);
+		}
+		return ret;	
+	}
+	
+	function createView(s, bigBillFilter){
+		var oDivBoard=document.createElement("div");
+		var oDivInfo=document.createElement("div");
+		var bigSaleBill, bigBuyBill;
+		var basicInfo, detailInfo;
+		if(!s.isExponent){
+			for(var i=0;i< s.saleBill.length;i++){
+				if(s.saleBill[i][1] >= bigBillFilter){
+					bigSaleBill+="[" +s.saleBill[i][0]+"x"+s.saleBill[i][1]+"]";
+				}
+			}
+			for(var i=0;i< s.saleBill.length;i++){
+				if(s.saleBill[i][1] >= bigBillFilter){
+					bigSaleBill+="[" +s.saleBill[i][0]+"x"+s.saleBill[i][1]+"]";
+				}			
+			}
+			
+			basicInfo += bigSaleBill+" " ;
+			basicInfo += s.code +" ";
+			basicInfo += (s.price-s.lastClosePrice)/s.lastClosePrice+" ";
+			basicInfo +="{<i>" + s.maxPrice + "/" + s.lastClosePrice*1.1 + "</i>, <b>"+s.price + "</b> ,<i>" +s.minPrice + "/" + s.lastClosePrice*0.9 + "</i>} ";
+			basicInfo += bigBuyBill+ " "; 
+			basicInfo +="<" + s.openPrice + " , " + (s.openPrice-s.lastClosePrice)/s.lastClosePrice + " , " + s.lastClosePrice+">\n" ;
+			
+			detailInfo += "<table visibility='hidden'>\n";
+			detailInfo += "<tr>\n";
+			
+			for(var i=0;i<s.saleBill.length;i++){			
+				detailInfo += "<td>" + s.saleBill[i][0]+"("+s.saveBill[i][1]+")";
+			}
+			detailInfo += "<tr>\n";
+			for(var i=0;i<s.buyBill.length;i++){			
+				detailInfo += "<td>" + s.buyBill[i][0]+"("+s.buyBill[i][1]+")";
+			}
+			
+			detailInfo += "<tr><td><td colspan=5> <i>(" + s.dealL +", " +s.dealE + ")</i>";
+			
+			detailInfo += "</table>\n";
+		}else{
+			if(s.code=="000001") 
+				basicInfo += "SH" + " ";
+			else if(s.code == "399106"
+				basicInfo += "SZ" + " ";
+				
+			basicInfo += "s.price" + " ";
+			basicInfo += "s.changePercentage" + " ";
+			
+			detailInfo ="";
+		}
+		
+		oDivInfo.innerHtml=basicInfo+detailInfo;
+		oDivBoard.appendChild(oDivInfo);
+			
+	}
+	
+	function showMe(){
+	
+		var arRawData=scratchSinaRawData(arCodeList);
+		if(arRawData!=null && arRawData.length==arCodeList.length){
+			var arStockData=readAllStockData(arRawData, arCodeList);
+			for(var i=0; i<arRawData.length;i++){
+				var bbfilter=getBBFilter(arCodeList[i]);
+				createView(arStockData[i], bbfilter);				
+			}	
+		}
+	}
+	
+	function expand(oBtn){
+		var oTable=oBtn.parentNode.nextSibling;
+		if(oTable!=null){
+			if(oTable.style.visibility==''){
+				oTable.style.visibility='hidden';
+				oBtn.value="+"
+			}else{
+				 oTable.style.visibility='';
+				oBtn.value="-"
+			}				 
+		}else{
+			alert("error detect in function expand");
+		}
+	}
+	
+	//unit test
+	//common	
+	function assertTrue(stmt) {
+			if(smtm==false)document.write("assertTrue failed, statment:" + stmt +" is not true!<br>");
+	}
+	
+	function assertEquals(actual, expect) {
+			var _actual=actual;
+			var _expect=expect;
+			if(_actual!=_expect){
+					document.write("assertEquals failed, actual:"+_actual + "expect:"+ _expect + "<br>");
+			}
+	}
+	
+	//ut case		
+	function testParserStockData(){
+			var raw_data1="航天机电, 12.20,11.97,11.89,12.42,11.75,11.89,11.90,12903382,156697209,17400,11.89,30500,11.88,4299,11.86,10997,11.85,1200,11.84,2100,11.90,1700,11.91,1800,11.92,8500,11.93,7000,11.94,2008-03-26,15:05:31";
+			var ret = parseOneStockData(raw_data1,"600151" );
+			assertTrue(ret!=null);
+			assertEquals("600151", ret.code);
+			assertEquals(0, ret.isExponent);
+			assertEquals("航天机电", ret.name);
+
+			assertEquals(12.20, ret.openPrice);
+			assertEquals(12.42, ret.maxPrice);
+			assertEquals(11.75, ret.minPrice);
+			assertEquals(11.89, ret.price);
+			assertEquals((11.89-119.7)/11.97, ret.changePercentage);
+			assertEquals(5, ret.saleBill.length);
+			assertEquals(11.90, ret.saleBill[0][0]);
+			assertEquals(21, ret.saleBill[0][1]);
+			assertEquals(11.91, ret.saleBill[1][0]);
+			assertEquals(17, ret.saleBill[1][1]);
+			assertEquals(11.92, ret.saleBill[2][0]);
+			assertEquals(18, ret.saleBill[2][1]);
+			assertEquals(11.93, ret.saleBill[3][0]);
+			assertEquals(85, ret.saleBill[3][1]);
+			assertEquals(11.94, ret.saleBill[4][0]);
+			assertEquals(70, ret.saleBill[4][1]);
+
+			assertEquals(5, ret.buyBill.length);
+			assertEquals(11.89, ret.buyBill[0][0]);
+			assertEquals(174, ret.buyBill[0][1]);
+			assertEquals(11.88, ret.buyBill[1][0]);
+			assertEquals(305, ret.buyBill[1][1]);
+			assertEquals(11.86, ret.buyBill[2][0]);
+			assertEquals(42.99, ret.buyBill[2][1]);
+			assertEquals(11.85, ret.buyBill[3][0]);
+			assertEquals(109.97, ret.buyBill[3][1]);
+			assertEquals(11.84, ret.buyBill[4][0]);
+			assertEquals(12, ret.buyBill[4][1]);
+		
+			assertEquals(12903382/1000000, ret.dealL);
+			assertEquals(156697209/10000, ret.dealE);
+			assertEquals(11.97, ret.lastClosePrice);
+
+			var raw_data2="上证指数,3606.857,-22.762,-0.63,462518,7050784";
+			ret = parseOneStockData(raw_data2, "000001");
+			assertEquals("上证指数", ret.name);
+			assertEquals(3606.857, ret.price);
+			assertEquals(-0.63, ret.changePercentage);
+			assertEquals(462518/1000, ret.changePercentage);
+			assertEquals(7060784/10000, ret.changePercentage);
+	}
+	
+	function testShowMe(){
+	
+	}
+
+	function testCreateView(){
+	
+	}
+
+	function testScratchSinaRawData(){
+		
+	}
+	function testGetBBFilter(){
+	
+	}
+	
+	//run ut
+	testScratchSinaRawData();
+	testGetBBFilter();
+
+	testParserStockData();
+	
+	//testCreateView();
+
+	//testShowMe();
+	
+
+</script>
+</head>
+<body oninit="" >
+		<div>
+				<div>SH 3560 +2% SZ 14500 2.1%{<i> 1200,1500 </i>} </div>				
+		</div>
+		<div>
+				<div>[S16.5x<B>600</B>] 600611 +2% {<i>17.9/18.1</i>, <b>16.49</b>, <i>14.8/13.2</i>} [B16.48x<B>800</B>] <17.9,-3%,14.8>  <input type="button" onclick="expand(this)" value="[]" /> </div>
+				<table style="visibility:'hidden'" >
+					<tr><td>down<td>16.5(2)<td> 16.52(3) <td> 16.53(100) <td> 16.54(200) <td> 16.6(300)
+					<tr><td>up <td>16.48(90) <td> 16.47(55) <td> 16.44(33) <td> 16.42(2) <td> 16.4(100)
+					<tr><td><td colspan=5 >243L(W),2500E(W) 
+				</table>
+		</div>
+</body>
+</html>

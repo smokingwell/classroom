@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "pid:$PPID"
+#kill $PPID 
+test $1 -eq $2 2>/dev/null
+echo "line:${#COMP_LINR}"
+#return 0 means success and true
+if [ $? -ne 0 ]
+then
+		test $1 == $2 2>/dev/null
+	if [ $? -ne 0 ]
+	then
+		echo "assertEquals failed! expected: $1 but was: $2 "
+echo ${LINENO}
+	fi
+fi

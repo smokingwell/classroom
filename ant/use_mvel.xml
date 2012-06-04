@@ -1,0 +1,57 @@
+<project name="MyProject" basedir="." default="main">
+
+  <path id="ant.libs" >
+    <fileset dir="lib">
+      <include name="bsf.jar" />
+      <include name="mvel.jar" />
+      <include name="mvel4bsf.jar" />
+    </fileset>
+  </path>
+  <!--task name="main" >
+    <script language="javascript"><![CDATA[
+      importPackage(java.io);
+      var bfr= new BufferedReader (new FileReader(".svn/entries"));
+      var line = brf.readLine();
+      echo = MyProject.createTask("echo")
+      echo.setMessage(line);
+      echo.perform();
+      bfr.close();
+      
+      ]]>
+    </script>
+  </task-->
+<target name="main">
+
+  <script language="mvel" classpathref="ant.libs">
+    import java.io.File;
+    import java.io.FileReader;
+    import java.io.BufferedReader;
+
+    br = new BufferedReader(new java.io.FileReader(".svn/entries"));
+    //System.out.println(br);
+    /*
+    foreach (x : 9) { 
+      System.out.print(x);
+    }
+
+    str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    foreach (el : str) {
+       System.out.print("[" + el + "]"); 
+    }
+
+    */
+    //foreach ( x : 10 ){
+
+      s=br.readLine();
+      System.out.println(s);
+      System.out.println(br.readLine());
+      System.out.println(br.readLine());
+      //if (s == null) break;
+
+      // }
+    br.close();
+  </script>
+</target>
+
+</project>

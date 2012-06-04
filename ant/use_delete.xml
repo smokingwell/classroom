@@ -1,0 +1,11 @@
+<project name="" basedir="." default="delete">
+
+  <target name= "delete" >
+    <delete includeemptydirs="true">
+      <fileset dir="work">
+        <include name="*/work/**"/>
+        <include name="*/dist/**"/>
+      </fileset>
+    </delete>
+  </target>
+</project>

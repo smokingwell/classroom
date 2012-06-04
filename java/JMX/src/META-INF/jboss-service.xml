@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<server>
+
+    <mbean code="mbean.lesson7.HelloWorldService" name="www.chengang.com.cn:service=HelloWorld">
+
+        <attribute name="Message">Hello World</attribute>
+
+    </mbean>
+
+</server>
+

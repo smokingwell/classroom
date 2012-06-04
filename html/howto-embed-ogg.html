@@ -1,0 +1,107 @@
+<video id="testvideo" style="display:none"></video>
+
+
+<script language="JavaScript">
+var vlcActiveX = false;
+var vlcPlugin = false;
+var videoElement = false;
+var oggPlugin = false;
+var javaEnabled = false;
+</script>
+<script language="vbScript">
+on error resume next
+vlcActiveX = (IsObject(CreateObject("VideoLAN.VLCPlugin.2")))
+</script>
+
+
+<script language="JavaScript">
+
+function embedVideoElement(location, width, height) {
+  document.write("<video style=\"width:" + width + ";height:" + height + ";\" src='" + location + "' id='video_element'></video><br>");
+  document.write("<input type='button' value='play' onClick='document.getElementById(\"video_element\").play()'>");
+  document.write("<input type='button' value='stop' onClick='document.getElementById(\"video_element\").pause(); document.getElementById(\"video_element\").start = 0;'>");
+}
+
+function embedOggPlugin(location, width, height) {
+  document.write("<object type='application/ogg' width='"+width+"' height='"+height+"' data='" + location + "'></object>");
+}
+
+function embedVlcPlugin(location, width, height) {
+  document.write("<object type='application/x-vlc-plugin' id='vlc_element' width='"+width+"' height='"+height+"' data='" + location + "'></object><br>");
+  document.write("<input type='button' value='play' onClick='document.getElementById(\"vlc_element\").play()'>");
+  document.write("<input type='button' value='stop' onClick='document.getElementById(\"vlc_element\").stop()'>");
+}
+
+
+function embedVlcActiveX(location,width,height) {
+  document.write("<object classid='clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921' codebase='http://downloads.videolan.org/pub/videolan/vlc/latest/win32/axvlc.cab#Version=0,8,6,0' width='"+width+"' height='"+height+"' id='vlc_element'>");
+  document.write("<param name='MRL' value='" + location +"'>");
+  document.write("</object><br>");
+  document.write("<input type='button' value='play' onClick='document.getElementById(\"vlc_element\").playlist.play()'>");
+  document.write("<input type='button' value='stop' onClick='document.getElementById(\"vlc_element\").playlist.stop()'>");
+}
+
+function embedCortado(location,width,height) {
+  document.write("<applet code='com.fluendo.player.Cortado.class' archive='cortado.jar' width='"+width+"' height='"+height+"'>");
+  document.write("<param name='url' value='" + location + "'>");
+  document.write("</applet>");
+}
+
+
+
+if(document.getElementsByTagName("video").length > 0) {
+  var myvideo = document.getElementById("testvideo");
+  if(myvideo.play) {
+    videoElement = true;
+  }
+}
+
+var searchedMimeTypes = false;
+var foundJavaMimeType = false;
+
+if(navigator.mimeTypes && navigator.mimeTypes.length > 0) {
+
+  searchedMimeTypes = true;
+
+  for (var i = 0; i < navigator.mimeTypes.length; i++) {
+    if(navigator.mimeTypes[i].type.indexOf("application/ogg") > -1) {
+      oggPlugin = true;
+    }
+    if(navigator.mimeTypes[i].type.indexOf("application/x-vlc-plugin") > -1) {
+      vlcPlugin = true;
+    }	
+    if(navigator.mimeTypes[i].type.indexOf("application/x-java-applet") > -1) {
+      foundJavaMimeType = true;
+    }
+  }
+
+}
+
+
+var nativePlayback = vlcActiveX || vlcPlugin || videoElement || oggPlugin;
+ 
+if(searchedMimeTypes) {
+  javaEnabled = navigator.javaEnabled() && foundJavaMimeType;
+} else {
+  javaEnabled = navigator.javaEnabled();
+}
+
+
+var file = "http://jawa05.englab.brq.redhat.com/show/istanbul-howto.ogg";
+var width = 512;
+var height = 384;
+
+if(videoElement) {
+  embedVideoElement(file,width,height);
+} else if(vlcPlugin) {
+  embedVlcPlugin(file,width,height);
+} else if(vlcActiveX) {
+  embedVlcActiveX(file,width,height);
+} else if(oggPlugin) {
+  embedOggPlugin(file,width,height);
+} else if(javaEnabled) {
+  embedCortado(file,width,height);
+}
+
+</script>
+

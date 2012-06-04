@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="RMI_IIOP" default="compile" basedir=".">
+	<property environment="env" />
+	<property name="classes.dir" value="." />
+	<property name="src" value="." />
+
+
+	<path id="compile.classpath">
+	</path>
+
+	<target name="clean">
+    <delete file="*.class"/>
+	</target>
+
+  <target name="compile" depends="clean">
+		<javac classpathref="compile.classpath" debug="true" deprecation="true" destdir="${classes.dir}" fork="yes" memoryInitialSize="128m" memoryMaximumSize="256m" nowarn="false" target="1.5">
+			<src path="${src}" />
+		</javac>
+    <exec executable="cmd">
+    <arg value="/c"/>
+    <arg value="rmic"/>
+    <arg value="-iiop"/>
+    <arg value="HelloImpl"/>
+  </exec>
+  </target>
+
+	<target name="run" depends="compile">
+		<java classname="" fork="yes" dir=".">
+			<classpath refid="compile.classpath" />
+		</java>
+	</target>
+
+</project>

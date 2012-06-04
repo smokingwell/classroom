@@ -1,0 +1,7 @@
+<project name="blabla">
+  <property file="a.properties" />
+  <target name="to_be_call" if="a">
+    <echo>a is set, and I am called!</echo>
+    <echo> is the property been read:${alreadyRead}</echo>
+  </target>
+</project>

@@ -1,0 +1,16 @@
+<project name="" basedir="." default="default">
+  <tstamp>
+    <format property="timestamp" pattern="dd-MMM-yy HH:mm:ss" />
+  </tstamp>
+  <property name="soa_builder_root" location="."/>
+  <property name="blabla" value="."/>
+  <property name="slash1" location="d:\\abc\d\e.xml"/>
+  <property name="slash2" location="d:/abc/d/e.xml"/>
+
+  <target name= "default" >
+    <copy todir="work">
+      <fileset dir="dist" excludes="deploy/**"/>
+    </copy>
+  </target>
+
+</project>

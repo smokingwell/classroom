@@ -1,0 +1,240 @@
+<html>
+		<head>
+		<meta http-equiv="Content-type" content="text/html; charset=gb2312" />
+				<title>:-)</title>
+<script type="text/javascript" >
+	var GIF_WIDTH=1024;
+	var GIF_HEIGHT=768;	
+
+	function getTopView(){
+		var allFrame=document.getElementsByTagName("iframe");
+		var allTitle=document.getElementsByTagName("h2");
+		//alert(allTitle.length);
+		//var childBtnGo=document.getElementById("btnGo");	
+		
+		var l=allFrame.length;
+		var parent;
+		if(l>0)parent=allFrame[0].parentNode;
+		for(var i=0; i< l; i++){			
+			if(allFrame[0])parent.removeChild(allFrame[0]);
+			if(allTitle[0])parent.removeChild(allTitle[0]);
+		}	
+		
+		var zStockCode, zDateList, nInterval;
+		zStockCode=txtStockCode.value;
+		zDateList=txtDateList.value;
+		nInterval=txtInterval.value;
+			//document.write(" "+zStockCode+" "+zDateList+" "+nInterval+"<BR>")	;
+			//checkInput(zStockCode, zDateList, nInterval);
+				
+		if(txtStockCode.value==""){alert("输入股票代码");return;}
+		if(txtDateList.value=="" && txtInterval.value==""){alert("日期列表和连续天数不能同时为空");return;}		
+		var arStockCodeList=txtStockCode.value.split(" ");
+		
+		//alert(arStockCodeList+":"+arDateList+":"+parseInt(txtInterval.value));
+		
+		var optSrc=document.getElementById("tvsrc");					
+		createView(arStockCodeList,getValidDateList(txtDateList.value, parseInt(txtInterval.value)), optSrc.value);
+
+	}
+	
+	function getValidDateList(zDateList, nInterval){
+		var arDateList=zDateList.split(" ");
+		var ret=new Array();
+		if(nInterval > 1){
+			var startDate;
+			if(zDateList == null || zDateList===""){
+				startDate=new Date();				
+			}else{
+				startDate=new Date(2008, parseInt( arDateList[0].substr(0,2), 10 )-1, parseInt(arDateList[0].substr(2,2), 10)  );
+			}
+			
+			for(var i=0; i< nInterval; i++){
+				ret[i]=getValidDate(startDate);
+				startDate=new Date(2008, parseInt( ret[i].substr(0,2),10 )-1, parseInt(ret[i].substr(2,2), 10)-1 ); 
+			}
+		}else{
+			if(zDateList == null || zDateList===""){
+				var today=new Date();				
+				if(ret.length==0)ret[0]=getValidDate(new Date(2008 ,today.getMonth(), today.getDate()-2));//默认取T-2的日子				
+			}else{
+				for(var i =0 ; i< arDateList.length; i++){
+					ret[i]=getValidDate( new Date(2008, parseInt(arDateList[i].substr(0,2),10) -1, parseInt(arDateList[i].substr(2,2),10) ));
+				}
+			}
+		}		
+		return ret;		
+	}
+	
+	function getValidDate(oDate){		
+		var dt=oDate;
+		while(dt.getDay()== 6 ||dt.getDay()==0){
+			dt=new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()-1);
+		}
+		
+		var zMonth="", zDate="";
+		if(dt.getMonth()+1<10)
+			zMonth="0"+(dt.getMonth()+1);
+		else
+			zMonth=(dt.getMonth()+1);
+
+		if(dt.getDate()<10)
+			zDate="0"+dt.getDate();
+		else
+			zDate=dt.getDate();
+			
+		return zMonth+zDate;
+	}
+	
+	function testGetValidDate(){
+		document.write(getValidDate( new Date() )+"<br>" );
+		document.write(getValidDate(new Date(2008, 3,7) )+"<br>");
+		document.write(getValidDate(new Date(2008, 2,29) )+"<br>");
+		document.write(getValidDate(new Date(2008, 2,31) )+"<br>");
+		
+	}
+	
+	function testGetValidDateList(){
+		document.write(getValidDateList("", 1).toString()+"<br>");
+		document.write(getValidDateList("", 7).toString()+"<br>");
+		document.write(getValidDateList("0407 0406 0405", 1).toString()+"<br>");
+		document.write(getValidDateList("0407 0406 0405", 7).toString()+"<br>");
+	}
+	
+	//testGetValidDate();
+	//testGetValidDateList();
+	
+	function mkurl_DJTopview(stockCode, viewDate){
+			return "http://www.djstock.cn/bbs/topview/"+viewDate+"/"+stockCode+".gif";			
+	} 
+		
+	function mkurl_DZHTopview(stockCode, viewDate){			
+			return "http://www.52topview.com/testttt.php?date="+viewDate+"&no="+stockCode;
+	} 
+	
+	function mkurl_ZNZTopview(stockCode, viewDate){			
+			return "http://www.52topview.com/testznz123.php?date="+viewDate+"&no="+stockCode;
+	} 
+	function mkurl_LQZTopview(stockCode, viewDate){			
+			return "http://www.51929.com/TopView/52topView/"+viewDate+"/"+stockCode+".jpg";			
+	} 
+	
+	function getContentH(lyr){
+			return lyr.scrollHeight;
+		
+	}
+	function getContentW(lyr){
+			//(is.ie) ? (is.mac ? lyr.offsetHeight : lyr.scrollHeight)
+			return lyr.scrollWidth;
+	}
+		
+
+	function px(i) {
+			return i + "px";
+	}
+
+	function setSize(obj, w, h) {
+		if (w) obj.style.width = px(w);
+		if (h) obj.style.height = px(h);
+	}
+
+	function createView(arStockCode, arDateList, nSrc){
+		for( var j=0; j< arStockCode.length; j++){
+			
+			var oStockTitle=document.createElement("h2");
+			oStockTitle.innerHTML=arStockCode[j];
+			document.body.appendChild(oStockTitle);
+			
+			for(var i = 0; i < arDateList.length; i++)	{
+				var pic_url="";
+				if(nSrc==1)
+					pic_url=mkurl_DZHTopview(arStockCode[j], arDateList[i]);
+				else if(nSrc==2)
+					pic_url=mkurl_ZNZTopview(arStockCode[j], arDateList[i]);
+				else if(nSrc==3)
+					pic_url=mkurl_DJTopview(arStockCode[j], arDateList[i]);
+				else 
+					pic_url=mkurl_LQZTopview(arStockCode[j], arDateList[i]);
+									
+				var f=document.createElement("IFRAME");
+				f.src=pic_url;
+								
+				//f.scroll(0,3000);
+				document.body.appendChild(f);
+				
+				if(txtSizeW.value=="" || txtSizeW.value==0)txtSizeW.value=GIF_WIDTH;
+				if(txtSizeH.value==""||txtSizeH.value==0)txtSizeH.value=GIF_HEIGHT;
+				setSize(f, txtSizeW.value,txtSizeH.value);
+			}
+		}
+
+	}
+	
+	function changeView(){
+			var allFrame=document.getElementsByTagName("iframe");
+			
+			for( var i=0; i< allFrame.length;  i++){				
+				setSize(allFrame[i], GIF_WIDTH, GIF_HEIGHT);
+			}
+	}
+	
+	function kd_handle(ev){
+		if (!ev) var ev=window.event;
+	 	var k;
+
+  		var kc=ev.keyCode;
+  		if(kc==13){
+  			if(txtDateList.value!="" || txtInterval.value!=""){getTopView();}
+  		}
+  		return true;
+	}
+	
+	function showSmartPick(){
+		var o=document.getElementById("smartPick");
+		//alert(o.tagName);
+				
+		if(o.style.visibility =='hidden')
+			o.style.visibility="";
+		else{
+			o.style.visibility="hidden";
+		}
+	}
+	
+	function pickCode(){		
+		var zText=document.getElementById("smartPick").value;
+		//alert(zText);
+		var arrayAll=zText.split(/.*(6[0-9]{5,5})/g);
+		//alert(arrayAll[1]);
+		var arrayCode=new Array();
+		var j=0;
+		
+		for(var i=0;i< arrayAll.length;i++){
+			if(arrayAll[i]=="")continue;			
+			if(arrayAll[i].length==6 )
+				arrayCode[j++]=arrayAll[i];
+		}
+				
+		var oStockCode=document.getElementById("txtStockCode");
+		//alert(arrayCode.join(" "));
+		oStockCode.value=arrayCode.join(" ");
+	}
+	
+</script>
+</head>
+<body style="position:absolute" >
+		来源<select id="tvsrc" >
+		<option value=1 >大智慧(IE only数据全)</option>
+		<option value=2>指南针(IE only数据全)</option>
+		<option value=3 >多吉论坛</option>
+		<option value=4 selected >老钱庄(更新快)</option>
+		</select>
+		代码列表: <input id="txtStockCode" type="text" title="例如输入600611 600231 用空格分开" value=""  style="width:128" onKeyDown="kd_handle(event)" /><input type="button" value="." onclick="showSmartPick()" title="智能选取,拷入包含上证股票的问题即可" /> 日期列表: <input id="txtDateList" type="text" title="例如输入0323 0501 用空格分开" value="" style="width:128" onKeyDown="kd_handle(event)" />
+		天数:<input id="txtInterval" type="text" style="width:16" value="1" onKeyDown="kd_handle(event)" />
+		Size:宽<input id="txtSizeW" type="text" value="" style="width:32" /> 高:<input id="txtSizeH" type="text" value="" style="width:32"/>
+		<input type="button"  onclick="changeView()" id="btnMax" value="最大化"/>
+		<input type="button"  onclick="getTopView()" id="btnGo" value="查"/>
+		<div style="font:90%;color:gray" > <i>5万-100万股为A大户, 100万股以上为特大户，限售股不在流通股范围内</i></div>
+		智能选取器:<br>		
+		<textarea onchange="pickCode()" style="visibility:hidden;" id="smartPick">some text</textarea>
+		</body>
+</html>

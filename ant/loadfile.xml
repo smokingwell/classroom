@@ -1,0 +1,38 @@
+<project default="default" basedir="." >
+  <target name="default" >
+    <!--get src="http://porkchop.redhat.com/released/JBEAP-4.3.0/CP04/zip/MD5SUM" dest="1.d" />
+    <get src="http://porkchop.redhat.com/released/JBEAP-4.3.0/CP04/zip/SHA1SUM" dest="2.d" />
+    <get src="http://porkchop.redhat.com/released/JBEAP-4.3.0/CP04_FP01/zip/MD5SUM" dest="3.d" /-->
+    <property name="eap_zip" value="jboss-eap-4.3.0.GA_CP04.zip" />
+    <property name="eap_doc" value="jboss-eap-docs-4.3.0.GA_CP04.zip" />
+    <property name="seamfp" value="jboss-eap-fp-docs-4.3.0.CP04_FP01.zip" />
+    <property name="seamfp_doc" value="jboss-eap-fp-4.3.0.CP04_FP01.zip" />
+
+  <!--concat destfile="4.properties"-->
+  <concat >
+    <fileset dir="." includes="*.d"/>
+    <filterchain>
+      <linecontains>
+        <contains value="${eap_zip}"/>
+      </linecontains>
+    </filterchain>
+    <filterchain>
+      <linecontains>
+        <contains value="${eap_doc}"/>
+      </linecontains>
+    </filterchain>
+      <!--linecontains>
+        <contains value="${seamfp}"/>
+      </linecontains>
+      <linecontains>
+        <contains value="${seamfp_doc}"/>
+      </linecontains-->
+      <!--tokenfilter>
+        <replaceregex pattern="(.* *)${eap_zip}" replace="eap_zip=\1"/>
+        <replaceregex pattern="(.* *)${eap_doc}" replace="eap_doc=\1"/>
+        <replaceregex pattern="(.* *)${seamfp}" replace="seamfp=\1"/>
+        <replaceregex pattern="(.* *)${seamfp_doc}" replace="seamfp_doc=\1"/>
+      </tokenfilter-->
+  </concat>
+  </target>
+</project>
