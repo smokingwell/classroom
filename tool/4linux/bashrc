@@ -5,6 +5,7 @@ if [ -f bash_completion ]; then
 fi
 
 export EDITOR=vim
+#to use vi in bash
 set -o vi
 
 export soaserver=.englab.brq.redhat.com
@@ -15,7 +16,19 @@ export soa42url=https://svn.devel.redhat.com/repos/jboss-soa/branches/4.2.0/buil
 export raycom=10.66.14.114
 
 PATH=$HOME/bin:$PATH
+#alias in general pupose
+alias l="ls -l -F --color"
+alias ls="ls -F --color"
+alias df="df -h"
+alias env="env | sort"
+alias diff="colordiff"
+alias r="source ~/.bashrc"
+alias myhelp="egrep 'alias|function .*\(' ${MY_TOOL}/bashrc"
 
+alias "vi=vim"
+alias "vim=vimx"
+
+#alias for redhat specific
 alias "vnc14=vncviewer -shared xen14$soaserver:4 -passwd ~/.vnc/xen14passwd"
 alias "vnc78=vncviewer -shared xen78$soaserver:4 -passwd ~/.vnc/xen14passwd"
 alias "vnc05=vncviewer -shared jawa05$soaserver:4 -passwd ~/.vnc/jawa05passwd"
@@ -30,8 +43,117 @@ alias "ssh05=ssh rzhang@jawa05$soaserver"
 alias "sshg3=ssh rzhang@jawa37g3.mw.lab.eng.brq.redhat.com"
 alias "sshg1=ssh rzhang@jawa37g1.mw.lab.eng.brq.redhat.com"
 alias "sshg2=ssh rzhang@jawa37g2.mw.lab.eng.brq.redhat.com"
-alias "mvelshell=java -jar  mvel2-2.0.12.jar"
-alias "vim=vimx"
 #xen14 don't have vimx
-alias "vi=/usr/bin/vim"
 alias "re=mutt -H ~/bin/review.template "
+
+alias "mvelshell=java -jar  mvel2-2.0.12.jar"
+
+
+#general function 
+# Reverse based listing of last 10 entries. Useful for listing my downloads directory.
+# Defaults to time based. Pass in args (e.g. -S for size based, -t for timestamp based).
+function lt()
+{
+    ARGS="-S"
+    while [[ "$1" == -* ]] ; do
+       ARGS="$1" ; shift
+    done
+
+    [[ -z "$1" ]] && echo "Usage: lt <directory>" && return
+    [[ ! -d "$1" ]] && echo "Usage: lt <directory>" && return
+
+    ls $ARGS -l $1 |& tail -10
+}
+
+#list big file R recersive
+#-s indicate put size in the first column
+#-R indicate recursive
+#-h indicate human readable size shown as 'M'
+#sort -g means sort as number instead of alphe
+function lr()
+{
+  ls -lhs -R $1 |egrep ".* .* .* .*M .*"|sort -g |tail 
+}
+
+
+
+function killit() 
+{
+  [[ -z "$1" ]] && echo "Usage: killit <process_name>" && return
+  #use tail , or awk 'NR!=1 && ${print $1}'
+  for i in $(ps -C $1 |tail -n +2 |awk '{print $1}');
+    do kill -9 $i;    echo " killed $i";
+  done
+  
+}
+
+function srt2lrc() 
+{
+  filename=$1
+  echo $filename
+  sed -e 's/^[0-9]\+.$/@@/g' -e 's/00:\(.*:.*\),\(.*\)[0-9] --> \(.*:.*:.*,.*\)/[\1.\2]/g' $filename |sed -e ':a;N;s/[\r\n]/ /g;ta' |sed -e 's/@@/\n/g' >${filename}.lrc
+ 
+}
+
+# Grep the xchatlog
+function grepchatlog()
+{
+  usage="usage:$0 pattern target.txt "
+  if [ $# -eq 0 ]; then
+    echo $usage && return;
+  elif [ $# -eq 1 ]; then
+    #filter the useless contents
+    sed -e '/has joined/d' -e '/has quit/d' -e '/has left/d' -e '/ping$/d' -e '/pong$/d' -e '/now known as/d' $1
+  elif [ $# -eq 2 ]; then
+    sed -e '/\~/d' -e '/\*\*\*\*/d' -e '/has joined/d' -e '/has quit/d' -e '/has left/d' -e '/ping$/d' -e '/pong$/d' -e '/now known as/d' $2 |grep $1
+  fi
+}
+
+#start vnc server use port 4
+function vncstart() 
+{
+  if [[ "$1" == '' ]] ; then
+    RESOLUTION=1680x1000
+  else
+    RESOLUTION=$1
+  fi
+
+  vncserver -geometry $RESOLUTION :4
+  #vncserver -geometry 1280x800
+  
+}
+
+function vncstop() 
+{
+  vncserver -kill :4 
+}
+
+#check the frequent used command
+function topcmd() 
+{
+  history | awk '{print $2}' | awk 'BEGIN {FS="|"} {print $1}'|sort|uniq -c | sort -n | tail | sort -nr
+}
+
+
+#git and svn function
+# Recursive git implementation.
+function rgit()
+{
+    (( $# == 0 )) && echo "Usage: $0 <git-cmd> ... [Run git command recursively over subdirs]" && return 1
+
+    setopt LOCAL_OPTIONS NO_ALL_EXPORT NO_AUTO_PUSHD
+
+    local cwd=`pwd`
+
+    for i in `find . -type d -name .git | sort`
+    do
+        local d=`dirname $i | sed 's/\.\///'`
+        echo "### -> $d"
+
+        cd $d
+        git $*
+        cd $cwd
+    done
+}
+
+
