@@ -9,6 +9,8 @@ export EDITOR=vim
 set -o vi
 
 export PS1='[\u@${PWD}]\$' 
+HISTFILESIZE=100000
+HISTSIZE=100000
 
 #property for redhat 
 export soaserver=.englab.brq.redhat.com
@@ -27,6 +29,9 @@ alias env="env | sort"
 alias diff="colordiff"
 alias r="source ~/.bashrc"
 alias myhelp="egrep 'alias|function .*\(' ${MY_TOOL}/bashrc"
+alias brmsbin="cd brms-standalone-5.3.0/jboss-as/bin/"
+alias soabin="cd jboss-soa-p-5/jboss-as/bin/"
+
 
 alias "vi=vim"
 alias "vim=vimx"
@@ -52,7 +57,90 @@ alias "re=mutt -H ~/bin/review.template "
 alias "mvelshell=java -jar  mvel2-2.0.12.jar"
 
 
-#general function 
+#function specfic to REDHAT
+#create a fast profile
+function brmsenv()
+{
+
+  #notice that error if add *whitespace* in 'BRMS53_ROOT_PATH= "brms-standalone-5.3.0"'
+  BRMS53_ROOT_PATH="brms-standalone-5.3.0" 
+  JBOSS_ROOT_PATH=""
+
+  #if it is under brms 5.3 standalone path
+  i=$(expr match $PWD ".*$BRMS53_ROOT_PATH")
+
+  if [ $i -eq 0 ]; then
+    echo "This is not a valid BRMS 5.3 standalone package path" && return
+  else 
+    JBOSS_ROOT_PATH="$(expr substr $PWD 1 $i)/jboss-as"
+  fi
+
+    FAST_PROFILE_PATH=$JBOSS_ROOT_PATH/server/fast
+
+  #copy default proile to fast profile, delete if already existed
+  [[ -d "$FAST_PROFILE_PATH" ]] && rm -rf $FAST_PROFILE_PATH
+  cp -r $JBOSS_ROOT_PATH/server/default $JBOSS_ROOT_PATH/server/fast
+  
+  #set brms auth
+  sed -i 's/#//g' $FAST_PROFILE_PATH/conf/props/brms-users.properties
+
+  #set log, no append
+  sed -i 's/name="Append" value="true"/name="Append" value="false"/g' $FAST_PROFILE_PATH/conf/jboss-log4j.xml
+  
+  #remove unused service and module
+  echo "Remove ejb3 service"
+  rm -f $FAST_PROFILE_PATH/deploy/ejb3*
+  rm -f $FAST_PROFILE_PATH/deployers/ejb3-deployers-jboss-beans.xml  $FAST_PROFILE_PATH/deployers/jboss-ejb3-endpoint-deployer.jar
+
+  echo "Remove ejb2 service"
+  rm -f $FAST_PROFILE_PATH/deploy/ejb2*
+
+
+  echo "Remove key generator " 
+  rm -rf $FAST_PROFILE_PATH/deploy/uuid-key-generator.sar
+
+  echo "Remove JBOSS MAIL" 
+  rm -rf $FAST_PROFILE_PATH/deploy/mail-service.xml $FAST_PROFILE_PATH/deploy/mail-ra.rar
+
+  echo "removed seam & admin-console"
+  rm -rf $FAST_PROFILE_PATH/deploy/admin-console.war 
+  rm -rf $FAST_PROFILE_PATH/deployers/seam.deployer $FAST_PROFILE_PATH/deployers/webbeans.deployer 
+
+  echo "Removed xnio-deployer and xnio-provider"
+  rm -rf $FAST_PROFILE_PATH/deployers/xnio.deployer  $FAST_PROFILE_PATH/deploy/xnio-provider.jar
+
+  echo "hot deployment"
+  rm -f $FAST_PROFILE_PATH/deploy/hdscanner-jboss-beans.xml
+
+  #remove jmx console and remoting and other stuff
+  echo "remove jmx console and remoting and other stuff"
+  rm -rf  $FAST_PROFILE_PATH/deploy/jmx-remoting.sar
+  rm -rf  $FAST_PROFILE_PATH/deploy/jmx-console.war
+  rm -rf  $FAST_PROFILE_PATH/deploy/profleservice-secured.jar
+  rm -rf  $FAST_PROFILE_PATH/deployers/sqlexception-service.xml
+  rm -rf  $FAST_PROFILE_PATH/deployers/hibernate-deployer-jboss-beans.xml 
+ 
+  #echo "Remove JMS service" 
+  #rm -rf $FAST_PROFILE_PATH/deploy/quartz-ra.rar $FAST_PROFILE_PATH/deploy/jms-ra.rar
+
+}
+
+#General function 
+
+#
+function mytop()
+{
+  [[ -z "$1" ]] && echo "Usage: mytop <process_name>" && return
+  PIDS=""
+  #head -n -1 to print all but the last one
+  for i in $(ps au|grep $1 |head -n -1 |awk '{print $2}');
+    do PIDS+="$i,"
+  done
+  PIDS+="0"
+  echo $PIDS
+  top -p $PIDS
+}
+
 # Reverse based listing of last 10 entries. Useful for listing my downloads directory.
 # Defaults to time based. Pass in args (e.g. -S for size based, -t for timestamp based).
 function lt()
@@ -80,11 +168,14 @@ function lr()
 
 
 
+#ps -C processname is useful, but it could miss process and don't have wild match function
 function killit() 
 {
   [[ -z "$1" ]] && echo "Usage: killit <process_name>" && return
   #use tail , or awk 'NR!=1 && ${print $1}'
-  for i in $(ps -C $1 |tail -n +2 |awk '{print $1}');
+  #tail -n +2 print from the second line
+#  for i in $(ps -C $1 |tail -n +2 |awk '{print $1}');
+  for i in $(ps au|grep $1 |head -n -1 |awk '{print $2}');
     do kill -9 $i;    echo " killed $i";
   done
   
