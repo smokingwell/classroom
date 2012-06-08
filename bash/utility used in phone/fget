@@ -1,9 +1,0 @@
-#!/bin/sh
-TARGET_PATH=.
-SRC_PATH=/ezxlocal
-
-for i in $* ; do
-	chmod 0755 $SRC_PATH/$i
-	cp $SRC_PATH/$i $TARGET_PATH/$i
-done
-

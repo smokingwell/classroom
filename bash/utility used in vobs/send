@@ -1,3 +1,0 @@
-#!/bin/sh
-cat ~/.ftpauto |sed -s \s/FILES/$1/ | ftp -n
-echo "$1 has been sent to //bjdclinx01/linuxfilebox"

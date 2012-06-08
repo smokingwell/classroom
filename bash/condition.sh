@@ -1,4 +1,5 @@
 #!/bin/bash -v
+#use -v to input commandline
 #file
 
 #test file
@@ -27,3 +28,11 @@ fi
 
 [[ "~e7104c" == f* ]] && echo "bingle"]]
 
+if [ 1 -ne 0 ]
+then
+		echo "1 != 0"
+	if [ 2 -ne 0 ]
+	then
+		echo " 2!=0"
+	fi
+fi

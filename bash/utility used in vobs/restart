@@ -1,7 +1,0 @@
-#!/bin/bash
-{
-sleep 3;
-echo "Who'syourDaddy$";
-sleep 3;
-}|sudo /sbin/shutdown -r now
-

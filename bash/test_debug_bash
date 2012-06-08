@@ -1,6 +1,0 @@
-#!/bin/bash 
-#
-echo "Your home is:$HOME"
-echo "Your terminal type is:$TERM"
-echo "Your Name is:$UER"
-ls /etc/rc3.d/S*
