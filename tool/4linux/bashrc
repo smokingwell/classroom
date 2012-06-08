@@ -58,7 +58,41 @@ alias "mvelshell=java -jar  mvel2-2.0.12.jar"
 
 
 #function specfic to REDHAT
-#create a dev profile
+#Patch drools jbpm project's version
+function brmsversion(){
+  [[ -z "$1" ]] && echo "Usage: $0 <OLD, NEW> eg:$0 ER8 ER9 or $0 ER9 CR1 " && return
+  [[ -z "$2" ]] && echo "Usage: $0 <OLD, NEW> eg:$0 ER8 ER9 or $0 ER9 CR1 " && return
+  VERSION_PATCH_FILE=update_version.patch
+  PROJECTS="droolsjbpm-build-bootstrap  droolsjbpm-knowledge guvnor drools droolsjbpm-integration droolsjbpm-tools jbpm"
+
+  for i in $PROJECTS;
+  do
+    cwd=$PWD
+    [[ ! -d $i ]] && echo "$i is expected to be present in current folder, but faile!" && return
+    echo ###$i###
+    cd $i
+    [[ ! -f "$VERSION_PATCH_FILE" ]] && echo "$VERSION_PATCH_FILE is expected in current folder but failed!" && return
+    
+    CUR=$1
+    NEX=$2
+    n=${CUR:2}
+    PRE="${CUR:0:2}$((--n))"
+    echo $PRE+$CUR+$NEX
+    if  grep  $NEX $VERSION_PATCH_FILE 1>null
+    then
+      echo "it seems already patched, *skip* $i"
+    else
+      echo "it is good to patch"
+      sed -i "s/$CUR/$NEX/g" $VERSION_PATCH_FILE
+      sed -i "s/$PRE/$CUR/g" $VERSION_PATCH_FILE
+      patch -p1<$VERSION_PATCH_FILE
+    fi
+    cd $cwd
+  done
+
+}
+
+#create a crean profile for testing
 function brmsenv()
 {
   [[ "$1" == "--help" ]] && echo   "Usage:
@@ -133,6 +167,7 @@ function brmsenv()
 }
 
 #General function 
+#Use to test bash in command line
 function assertEqual()
 {
   [ $# -ne 2 ] && echo "Usage:$0 arg1 arg2"
@@ -145,12 +180,17 @@ function mytop()
 {
   [[ -z "$1" ]] && echo "Usage: mytop <process_name>" && return
   PIDS=""
+  let count=0
   #head -n -1 to print all but the last one
   for i in $(ps aux|grep $1 |head -n -1 |awk '{print $2}');
-    do PIDS+="$i,"
+  do
+    let count=count+1
+    [[ $count -ge 20 ]] && break
+    PIDS+="$i,"
   done
-  PIDS+="0"
-  top -p $PIDS
+  
+  #%, means to remove the ',' at the end
+  top -p ${PIDS%,}
 }
 
 # Reverse based listing of last 10 entries. Useful for listing my downloads directory.
@@ -235,7 +275,7 @@ function vncstop()
 }
 
 #check the frequent used command
-function topcmd() 
+function myhistory() 
 {
   history | awk '{print $2}' | awk 'BEGIN {FS="|"} {print $1}'|sort|uniq -c | sort -n | tail | sort -nr
 }
