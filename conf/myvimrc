@@ -3,17 +3,21 @@
 " file.
 " When using windows gvim $VIM\_gvimrc will overide some duplicate setting.
 "
+" Maintainer:	Bram Moolenaar <Bram@vim.org>
+" Last change:	2008 Jul 02
+"
+" To use it, copy it to
+"     for Unix and OS/2:  ~/.vimrc
+"	      for Amiga:  s:.vimrc
+"  for MS-DOS and Win32:  $VIM\_vimrc
+"	    for OpenVMS:  sys$login:.vimrc
 
 " When started as "evim", evim.vim will already have done these settings.
 if v:progname =~? "evim"
   finish
 endif
-": source ~/bin/vim/groovy.vim
 
-: if filereadable(g:MYHOME."/bin/vim/groovy.vim")
-:  source ~/bin/vim/groovy.vim
-: endif
-
+"set gvim maximize as soon as open
 if v:progname =~? "gvim"
   set lines=70
   set columns=300
@@ -28,8 +32,10 @@ set backspace=indent,eol,start
 
 "ryan's prefered setting
 "--------------------------------------------------------------------
-map <F1> :!make<CR>
-map <F8> :e ~/_vimrc<CR>
+map <F8> :e ~/.vimrc<CR>
+
+map  <F2> :colorscheme desert<CR>
+map  <F4> :colorscheme darkblue<CR>
 set nu
 set ruler		" show the cursor position all the time
 
@@ -39,17 +45,16 @@ set shiftwidth=2
 set tabstop=2
 set expandtab
 
-"虏禄卤赂路脻
+"不备份
 set nowritebackup
 set nobackup
 
-
-"虏禄脪陋鹿陇戮脽脤玫
+"不要工具条
 set guioptions-=T
 
-"desert 脩脮脡芦脰梅脤芒
-"colorscheme desert
-"脛卢脠脧脳脰脤氓脦陋Lucida Console拢卢脳脰脤氓麓贸脨隆脦陋11拢卢麓脰脤氓拢篓赂枚脠脣脠脧脦陋卤脠Fixsys脣卢脪禄碌茫拢漏
+"set default colorscheme 
+colorscheme darkblue
+"默认字体为Lucida Console，字体大小为11，粗体（个人认为比Fixsys爽一点）
 "set guifont=Lucida_Console:h11:b
 "--------------------------------------------------------------------
 
