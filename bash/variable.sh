@@ -10,5 +10,6 @@ echo "Your terminal type is:$TERM"
 echo "`date`"
 echo "pid:$PPID"
 echo "line:${#COMP_LINR}"
+echo $env
 echo ${LINENO}
 
