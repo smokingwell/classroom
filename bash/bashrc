@@ -31,6 +31,7 @@ alias r="source ~/.bashrc"
 alias myhelp="egrep 'alias|function .*\(' ${MY_TOOL}/bashrc"
 alias brmsbin="cd brms-standalone-5.3.0/jboss-as/bin/"
 alias soabin="cd jboss-soa-p-5/jboss-as/bin/"
+alias cdtmp="mkdir /tmp/$(date +%B%d) 2>null || cd /tmp/$(date +%B%d)"
 
 
 alias "vi=vim"
@@ -301,5 +302,24 @@ function rgit()
         cd $cwd
     done
 }
+
+# Recursive git log, only show the latest one commit
+function rgitlog ()
+{
+    #setopt LOCAL_OPTIONS NO_ALL_EXPORT NO_AUTO_PUSHD
+
+    local cwd=`pwd`
+
+    for i in `find . -type d -name .git | sort`
+    do
+        local d=`dirname $i | sed 's/\.\///'`
+        echo "### -> $d"
+
+        cd $d
+        git log $*|head -n 6
+        cd $cwd
+    done
+}
+
 
 
