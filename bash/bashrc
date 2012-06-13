@@ -176,6 +176,15 @@ function assertEqual()
   #return 0 means success and true
   [ $? -ne 0 ] && echo "Line:${LINENO} assertEquals failed! expected: $1 but was: $2 "
 }
+
+function isvpn()
+{
+  if ifconfig |grep "10.66" 1>null ;then
+    echo "Yes,VPN connected. IP $(ifconfig |grep 10.66.114.56|awk '{print $2}')"
+  else
+    echo "Not, Not connected"
+  fi
+}
 #
 function mytop()
 {
