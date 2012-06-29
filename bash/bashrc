@@ -28,10 +28,11 @@ alias df="df -h"
 alias env="env | sort"
 alias diff="colordiff"
 alias r="source ~/.bashrc"
-alias myhelp="egrep 'alias|function .*\(' ${MY_TOOL}/bashrc"
+alias myhelp="egrep 'alias|function .*\(' /classroom/bash/bashrc"
 alias brmsbin="cd brms-standalone-5.3.0/jboss-as/bin/"
 alias soabin="cd jboss-soa-p-5/jboss-as/bin/"
-alias cdtmp="mkdir /tmp/$(date +%B%d) 2>null || cd /tmp/$(date +%B%d)"
+alias tmp="mkdir /tmp/$(date +%B%d) 2>null || cd /tmp/$(date +%B%d)"
+alias xchatlog="cd ~/.xchat2/xchatlogs/"
 
 
 alias "vi=vim"
@@ -61,8 +62,8 @@ alias "mvelshell=java -jar  mvel2-2.0.12.jar"
 #function specfic to REDHAT
 #Patch drools jbpm project's version
 function brmsversion(){
-  [[ -z "$1" ]] && echo "Usage: $0 <OLD, NEW> eg:$0 ER8 ER9 or $0 ER9 CR1 " && return
-  [[ -z "$2" ]] && echo "Usage: $0 <OLD, NEW> eg:$0 ER8 ER9 or $0 ER9 CR1 " && return
+  [[ -z "$1" ]] && echo "Usage: brmsversion <OLD, NEW> eg:brmsversion ER8 ER9 or brmsversion  ER9 CR1 " && return
+  [[ -z "$2" ]] && echo "Usage: brmsversion <OLD, NEW> eg:brmsversion ER8 ER9 or brmsversion ER9 CR1 " && return
   VERSION_PATCH_FILE=update_version.patch
   PROJECTS="droolsjbpm-build-bootstrap  droolsjbpm-knowledge guvnor drools droolsjbpm-integration droolsjbpm-tools jbpm"
 
@@ -88,6 +89,32 @@ function brmsversion(){
       sed -i "s/$PRE/$CUR/g" $VERSION_PATCH_FILE
       patch -p1<$VERSION_PATCH_FILE
     fi
+    cd $cwd
+  done
+
+}
+
+function CR(){
+  VERSION_PATCH_FILE=update_version.patch
+  PROJECTS="droolsjbpm-build-bootstrap  droolsjbpm-knowledge guvnor drools droolsjbpm-integration droolsjbpm-tools jbpm"
+
+  for i in $PROJECTS;
+  do
+    cwd=$PWD
+    [[ ! -d $i ]] && echo "$i is expected to be present in current folder, but faile!" && return
+    echo ###$i###
+    cd $i
+    [[ ! -f "$VERSION_PATCH_FILE" ]] && echo "$VERSION_PATCH_FILE is expected in current folder but failed!" && return
+    
+    #if  grep  $NEX $VERSION_PATCH_FILE 1>null
+    #then
+    #  echo "it seems already patched, *skip* $i"
+    #else
+      echo "it is good to patch"
+      sed -i "s/5.3.2-SNAPSHOT/5.3.0.BRMS-ER9/g" $VERSION_PATCH_FILE
+      sed -i "s/5.3.2.Final/5.3.0.BRMS/g" $VERSION_PATCH_FILE
+      patch -p1<$VERSION_PATCH_FILE
+    #fi
     cd $cwd
   done
 
@@ -171,16 +198,27 @@ function brmsenv()
 #Use to test bash in command line
 function assertEqual()
 {
-  [ $# -ne 2 ] && echo "Usage:$0 arg1 arg2"
+  [ $# -ne 2 ] && echo "Usage:assertEqual arg1 arg2"
   test $1 -eq $2 2>/dev/null
   #return 0 means success and true
   [ $? -ne 0 ] && echo "Line:${LINENO} assertEquals failed! expected: $1 but was: $2 "
 }
 
+function scp05()
+{
+ [ $# -lt 1 ] && echo "Usage:scp05 FILE [jawa05 Folder]" && return
+ TARGET=$1 
+ if [ -z $2 ];then
+  scp $TARGET rzhang@jawa05.englab.brq.redhat.com:~/incoming
+ else
+  scp $TARGET rzhang@jawa05.englab.brq.redhat.com:$2
+ fi
+}
+
 function isvpn()
 {
   if ifconfig |grep "10.66" 1>null ;then
-    echo "Yes,VPN connected. IP $(ifconfig |grep 10.66.114.56|awk '{print $2}')"
+    echo "Yes,VPN connected. IP $(ifconfig |grep 10.66|awk '{print $2}')"
   else
     echo "Not, Not connected"
   fi
@@ -254,14 +292,14 @@ function srt2lrc()
 # Grep the xchatlog
 function grepchatlog()
 {
-  usage="usage:$0 pattern target.txt "
+  usage="usage:grepchatlog pattern target.txt "
   if [ $# -eq 0 ]; then
     echo $usage && return;
   elif [ $# -eq 1 ]; then
     #filter the useless contents
     sed -e '/has joined/d' -e '/has quit/d' -e '/has left/d' -e '/ping$/d' -e '/pong$/d' -e '/now known as/d' $1
   elif [ $# -eq 2 ]; then
-    sed -e '/\~/d' -e '/\*\*\*\*/d' -e '/has joined/d' -e '/has quit/d' -e '/has left/d' -e '/ping$/d' -e '/pong$/d' -e '/now known as/d' $2 |grep $1
+    sed -e '/Morning/d' -e '/morning/d' -e '/\~/d' -e '/\*\*\*\*/d' -e '/has joined/d' -e '/has quit/d' -e '/has left/d' -e '/ping$/d' -e '/pong$/d' -e '/now known as/d' $2 |grep $1
   fi
 }
 
@@ -295,7 +333,7 @@ function myhistory()
 # Recursive git implementation.
 function rgit()
 {
-    (( $# == 0 )) && echo "Usage: $0 <git-cmd> ... [Run git command recursively over subdirs]" && return 1
+    (( $# == 0 )) && echo "Usage: rgit <git-cmd> ... [Run git command recursively over subdirs]" && return 1
 
     #setopt LOCAL_OPTIONS NO_ALL_EXPORT NO_AUTO_PUSHD
 
