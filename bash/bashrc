@@ -231,11 +231,10 @@ function scp05()
 
 function isvpn()
 {
-  if ifconfig |grep "10.66" 1>null ;then
-    echo "Yes,VPN connected. IP $(ifconfig |grep 10.66|awk '{print $2}')"
-  else
-    echo "Not, Not connected"
-  fi
+  ping -c 1 squid.corp.redhat.com 1>null
+  [ $? -eq 0 ] && echo "Yes,VPN connected. IP $(ifconfig |grep 10.66|awk '{print $2}')" && return
+
+  echo "Not, Not connected"
 }
 #
 function mytop()
