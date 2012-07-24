@@ -33,6 +33,8 @@ alias brmsbin="cd brms-standalone-5.3.0/jboss-as/bin/"
 alias soabin="cd jboss-soa-p-5/jboss-as/bin/"
 alias tmp="mkdir /tmp/$(date +%B%d) 2>null || cd /tmp/$(date +%B%d)"
 alias xchatlog="cd ~/.xchat2/xchatlogs/"
+alias starttime="systemd-analyze blame"
+alias axel='axel --num-connections=125 --alternate'
 
 
 alias "vi=vim"
@@ -60,6 +62,18 @@ alias "mvelshell=java -jar  mvel2-2.0.12.jar"
 
 
 #function specfic to REDHAT
+function invalidzip()
+{
+  for i in $(find . -type f \( -name "*.jar" -o -name "*.war" -o -name "*.zip" \) ); 
+    do
+      if ! unzip -tq $i 1>null 2>null
+      then 
+        echo Remove invalid zip $i
+        [[ "$1" == "-l" ]] && rm -rf $i
+      fi
+    done
+}
+
 #Patch drools jbpm project's version
 function brmsversion(){
   [[ -z "$1" ]] && echo "Usage: brmsversion <OLD, NEW> eg:brmsversion ER8 ER9 or brmsversion  ER9 CR1 " && return
