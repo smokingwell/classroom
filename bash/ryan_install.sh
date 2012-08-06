@@ -18,7 +18,7 @@ rpm -ivh http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-*
 
 #basic tools
-$INSTALL_CMD gnochm xchat thunderbird krusader xxdiff krename evince $GVIM unrar stardict xterm gconf-editor vpnc meld wine freemind colordiff goldendict
+$INSTALL_CMD gnochm xchat thunderbird krusader xxdiff krename evince $GVIM unrar stardict xterm gconf-editor vpnc meld wine freemind colordiff goldendict p7zip
 
 #for firefox, todo more
 rpm -ivh http://linuxdownload.adobe.com/linux/i386/adobe-release-i386-1.0-1.noarch.rpm
