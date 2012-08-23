@@ -218,12 +218,13 @@ function assertEqual()
   [ $? -ne 0 ] && echo "Line:${LINENO} assertEquals failed! expected: $1 but was: $2 "
 }
 
+#Transport file into miscellaneous to jawa05
 function scp05()
 {
  [ $# -lt 1 ] && echo "Usage:scp05 FILE [jawa05 Folder]" && return
  TARGET=$1 
  if [ -z $2 ];then
-  scp $TARGET rzhang@jawa05.englab.brq.redhat.com:~/incoming
+  scp $TARGET rzhang@jawa05.englab.brq.redhat.com:/archive/miscellaneous/
  else
   scp $TARGET rzhang@jawa05.englab.brq.redhat.com:$2
  fi
