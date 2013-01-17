@@ -60,6 +60,23 @@ alias "re=mutt -H ~/bin/review.template "
 
 alias "mvelshell=java -jar  mvel2-2.0.12.jar"
 
+alias "vman=java -Djavax.net.ssl.trustStore=${_KEYSTORE} -Djavax.net.ssl.trustStorePassword=changeit -Djavax.net.ssl.trustStoreType=jks \
+     -Djavax.net.ssl.keyStore=${_KEYSTORE} -Djavax.net.ssl.keyStorePassword=changeit -Djavax.net.ssl.keyStoreType=jks \
+     -jar ~/vman.jar "
+
+#name,label,marks,group_id,artifact_id,ver,brew_link,project_url,internal_scm,external_scm
+function parseETT(){
+  [[ -z "$1" ]] && echo "Usage: parseETT inputfile " && return
+  inputfile=$1
+  cat $inputfile |awk 'BEGIN {FS=","} {print "{\"name\":\"" $1 "\", \"label\":\"" $2 "\", \"marks\":[\"" $3 "\"], \"group_id\":\"" $4 "\", \"artifact_id\":\"" $5 "\", \"ver\":\"" $6 "\", \"brew_link\":\"" $7 "\", \"project_url\":\"" $8 "\", \"internal_scm\":\"" $9 "\", \"external_scm\":\"" $10 "\"}" }'
+}
+
+
+function updateETT(){
+  [[ -z "$1" ]] && echo "Usage: parseETT inputfile " && return
+  inputfile=$1
+  cat $inputfile |awk 'BEGIN {FS=","} {print "{\"name\":\"" $1 "\", \"assignee\":\"Nick Cross\"}" }'
+}
 
 #function specfic to REDHAT
 function invalidzip()
@@ -72,6 +89,18 @@ function invalidzip()
         [[ "$1" == "-l" ]] && rm -rf $i
       fi
     done
+}
+
+#Check a rpm package
+function rpmcheck()
+{
+  rpm2cpio $1| cpio -idv
+}
+
+function httpshare()
+{
+  ln -sf $PWD/$1 /var/www/html/public/$2
+  echo "share link: http://$(ifconfig |grep 10.66|awk '{print $2}')/public/$2"
 }
 
 #Patch drools jbpm project's version

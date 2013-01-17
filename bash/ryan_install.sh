@@ -27,7 +27,7 @@ $INSTALL_CMD flash-plugin
 #input methord
 # create a symbolic link to /etc/X11/xinit/xinput.d/scim with name as xinput-YOUR LOCALE under /etc/alternatives. e.g. xinput-en_US
 # add "scim -d" to any of your startup script, e.g. xsession, .bashrc, .bash_profile
-$INSTALL_CMD scim-pinyin
+$INSTALL_CMD ibus_libpinyin
 
 #multimedia & video codec & others
 #$INSTALL_CMD filezilla k3b gparted nautilus-open-terminal gftp gallery2-picasa 
