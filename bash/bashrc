@@ -35,6 +35,7 @@ alias tmp="mkdir /tmp/$(date +%B%d) 2>null || cd /tmp/$(date +%B%d)"
 alias xchatlog="cd ~/.xchat2/xchatlogs/"
 alias starttime="systemd-analyze blame"
 alias axel='axel --num-connections=125 --alternate'
+alias meadimport="get-and-import --install /data2/m2repo.jenkins --save /tmp/meadimport/ --tag soa-brms-6-todo --owner rzhang"
 
 
 alias "vi=vim"
@@ -411,5 +412,104 @@ function rgitlog ()
     done
 }
 
+#
+# Runs get-maven-artifacts and import-maven.
+# Optional parameters:
+#    --tag <tag> to import into.
+#    --owner <name> owner name to user (normally defaults to $USER)
+#    --save <dir> copy downloaded dirs to dir
+#    --install <repo> optionally install the artifact to the specified local repository.
+#                     This saves having to wait for repository regeneration.
+# Then takes e.g.
+# org.apache.derby:derby-project:pom:10.8.2.2 org.eclipse.jetty:jetty-util:jar:7.6.3 ....
+get-and-import()
+{
+    #setopt LOCAL_OPTIONS NO_ALL_EXPORT NO_AUTO_PUSHD
+
+    local owner=$USER
+    local cwd=`pwd`
+
+    cleanup()
+    {
+        cd $cwd
+        rm -rf $ddir
+    }
+
+    which get-maven-artifacts 2> /dev/null
+    [[ "$?" != 0 ]] && echo "Mike Bonnet's get-maven-artifacts and import-maven must be in the path. Aborting." && return 1
+
+    while [ -n "$1" ]
+    do
+        case "$1" in
+          --tag)
+            shift
+            local TAG="--tag $1"
+            shift
+            ;;
+          --owner)
+            shift
+            local owner=$1
+            shift
+            ;;
+          --save)
+            shift
+            local SAVE=$1
+            shift
+            ;;
+          --skipimport)
+            shift
+            local skipimport=1
+            ;;
+          --install)
+            shift
+            local INSTALL=$1
+            shift
+            ;;
+          *)
+            break;
+        esac
+    done
+
+    [[ -z "$1" ]] && "Package to import is not set" && return 1
+
+    while [ -n "$1" ]
+    do
+        # Strip off any comma if we cut and pasted from a maven log.
+        local package=`echo $1 | tr -d ','`
+        echo "Importing package $package with owner $owner and tag '$TAG'"
+
+        local ddir=`mktemp -d`
+        cd $ddir
+        get-maven-artifacts $package
+
+        [[ "$?" != "0" ]] && echo "Error obtaining packages" && shift && cleanup && continue
+
+        if [ ! -n "$skipimport" ]
+        then
+          echo "Downloaded artifacts now importing"
+          import-maven --owner=$owner `echo $TAG` `/bin/ls -1 $ddir`
+        fi
+
+        if [ -n "$SAVE" ]
+        then
+            /bin/cp -f $ddir/* $SAVE
+        fi
+        if [ -n "$INSTALL" ]
+        then
+            find . -name "*.jar" > /dev/null 2>&1
+            if [ -f  *.jar ]
+            then
+                local F=`find . -name "*.jar" | egrep -v '(sources\.jar|javadoc\.jar|tests\.jar)'`
+                local PACKAGING="-Dpackaging=jar"
+            else
+                local F=`find . -name "*.pom"`
+            fi
+            #echo mvn -Dmaven.repo.local=$INSTALL -DpomFile=`find . -name "*.pom"` -Dfile=$F $PACKAGING install:install-file
+            mvn -Dmaven.repo.local=$INSTALL -DpomFile=`find . -name "*.pom"` -Dfile=$F $PACKAGING install:install-file
+        fi
+        shift
+        cleanup
+    done
+}
 
 
