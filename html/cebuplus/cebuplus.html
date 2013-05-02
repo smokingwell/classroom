@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Cebu +</title> 
+<link rel="stylesheet" href="images/main.css">
+<script type="text/javascript" language="javascript" src="images/prototype-1.js"></script>
+<script type="text/javascript" language="javascript" src="images/prototype-base-extensions.js"></script>
+<script type="text/javascript" language="javascript" src="images/prototype-date-extensions.js"></script>
+<script type="text/javascript" language="javascript" src="images/behaviour.js"></script>
+<script type="text/javascript" language="javascript" src="images/datepicker.js"></script>
+<link rel="stylesheet" href="images/datepicker.css">
+<script type="text/javascript" language="javascript" src="images/behaviors.js"></script>
+<script type="text/javascript"> 
+		function setDefaultDate(from, back) {
+		date1.value=from;
+		date2.value=back;
+		}
+		function gocebu() {
+			var f_m=date1.value.split("-")[0];
+			var f_d=date1.value.split("-")[1];
+			var f_y=date1.value.split("-")[2];
+			var t_m=date2.value.split("-")[0];
+			var t_d=date2.value.split("-")[1];
+			var t_y=date2.value.split("-")[2];
+			var search_url;
+			var orig="";
+			var dest=""; 
+		  for(i=0;i<document.all("fromBJ").length;i++){       
+				if(document.all("fromBJ")[i].checked){
+					orig="PEK";
+					dest=document.all("fromBJ")[i].value;
+					search_url="http://www.cebupacificairplus.com/search4.php?departMonth="+ f_m +"&departDay="+ f_d + "&departYear="+ f_y +"&origin=" + orig + "&destination=" + dest + "&B1=Search+CebuPacific+Flights";
+					window.open(search_url);
+					search_url="http://www.cebupacificairplus.com/search4.php?departMonth="+ t_m +"&departDay="+ t_d + "&departYear="+ t_y +"&origin=" + dest + "&destination=" + orig + "&B1=Search+CebuPacific+Flights";
+					window.open(search_url);
+				}       
+			}
+
+		  for(i=0;i<document.all("fromMNL").length;i++){       
+				if(document.all("fromMNL")[i].checked){
+					orig="MNL"
+					dest=document.all("fromMNL")[i].value;
+					search_url="http://www.cebupacificairplus.com/search4.php?departMonth="+ f_m +"&departDay="+ f_d + "&departYear="+ f_y +"&origin=" + orig + "&destination=" + dest + "&B1=Search+CebuPacific+Flights";
+					window.open(search_url);
+					search_url="http://www.cebupacificairplus.com/search4.php?departMonth="+ t_m +"&departDay="+ t_d + "&departYear="+ t_y +"&origin=" + dest + "&destination=" + orig + "&B1=Search+CebuPacific+Flights";
+					window.open(search_url);
+				}       
+			}
+		}
+  </script> 
+</head> 
+<body> 
+	<!--Date From & to -->
+	<h1>宿务航空查询器</h1>
+	<hr>
+	<div>
+<form onsubmit="return false;">
+去程: <input id="date1" class="datepicker" />        回程: <input id="date2" class="datepicker" />
+</form>
+<input type="button" id="but1" value="2013-Dec" onclick="setDefaultDate('12-16-2013', '12-20-2013');"/>
+	</div>
+	<hr>
+	<!--Flight From & to -->
+	<div id="FromBJ">
+	北京出发:<input type="checkbox" value="MNL" name="fromBJ"> MNL <input type="checkbox" value="CEB" name="fromBJ" > CEBU
+	</div>  
+	<hr>
+	<div id="FromMNL">
+	马尼拉出发:
+	<input type="checkbox" value="TAG" name="fromMNL" > TAG 
+	<input type="checkbox" value="DGT" name="fromMNL"> Dumaguete
+	<input type="checkbox" value="PPS" name="fromMNL"> 公主港 
+	<input type="checkbox" value="USU" name="fromMNL"> Colon
+	<input type="checkbox" value="MPH" name="fromMNL"> Caticlan(Borcay)
+	<input type="checkbox" value="KLO" name="fromMNL"> Kalibo(Borcay)
+	</div>
+		
+  <input type="button" id="but1" value="Go search" onclick="gocebu();"/>
+	</div>
+	<hr>
+	<a href="http://www.cebupacificair.com/">www.cebupacificair.com</a>
+	<hr>
+	
+</body> 
+</html>
+
