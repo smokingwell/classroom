@@ -66,20 +66,30 @@ alias "vman=java -Djavax.net.ssl.trustStore=${_KEYSTORE} -Djavax.net.ssl.trustSt
      -jar ~/vman.jar "
 
 #This is for unzip reversively
-function r_unzip(){
-  usage="$0 srcdir targetdir"
-  
+function r_unzip1(){
+    todir="$(basename $1 .zip)"
+    unzip $1 -d $todir
+    oldpwd="$PWD"
+    cd $todir
+    for i in `find . -name "*.zip"`;
+    do
+      r_unzip1 $i
+    done
+    cd $oldpwd
 }
 
 function r_unzip(){  
-	  todir="$(basename $1 .zip)"
-	  unzip $1 -d $todir
-	  pushd $todir
-    for i in `ls *.zip"`;
+  for j in `find .  *.zip`;
+  do
+	  todir="$(basename $j .zip)"
+	  unzip $j -d $todir
+	  oldpwd="$pwd"
+	  cd $todir
+    for i in `find . -name *.zip`;
     do
-      r_unzipfromfile $i
+      unzip $i -d $(basename $i .zip)
     done
-    popd
+    cd $oldpwd
   done
 }
 

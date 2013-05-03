@@ -1,23 +1,16 @@
 import java.net.*;
 
 public class TestTestStatic{
-  public static int st_count=0;
-  public int count=0;
-  
-  TestTestStatic(){
-    st_count++;
-    count++;
-  }
-  public void printme(){
+  public static void printme(TestObj t){
   System.out.println( "****************" );
-  System.out.println( "static counter:" +TestTestStatic.st_count);
-  System.out.println( "normal counter:" +count);
+  System.out.println( "static counter:" +t.st_count);
+  System.out.println( "normal counter:" +t.count);
   System.out.println( "****************" );
 
   }
 
 public static void main (String[] args)throws Exception {
-	URL urls[] = new URL[]{new URL("file:///classroom/java/basic")};  
+	URL urls[] = new URL[]{new URL("file:///classroom/java/basic/a/b/c")};  
 	/*
 	URLClassLoader ucl1 = new URLClassLoader(urls);  
 	URLClassLoader ucl2 = new URLClassLoader(urls);  
@@ -28,23 +21,29 @@ public static void main (String[] args)throws Exception {
 
 	ClassLoader cl1= ClassLoader.getSystemClassLoader();  
   ClassLoader cl2= new URLClassLoader(urls);
-  System.out.println("Two classloader:"+cl1 +","+cl2);
+  ClassLoader cl3= new  SimpleClassLoader("a/b/c");
+  
+  System.out.println("Two classloader:"+cl1 +","+ cl2+ "," +cl2.getParent() + "," + cl3 + ", " + cl3.getParent());
 
-  Class c1=cl1.loadClass("TestTestStatic");
-  Class c2=cl2.loadClass("TestTestStatic");
-  System.out.println("Two class:"+c1 +","+c2);
+  //Class c1=cl1.loadClass("TestObj");
+  Class c2=cl2.loadClass("TestObj");
+  Class c3=cl3.loadClass("TestObj");
+  System.out.println("Two class:"+","+c2 +"," + c3);
+  //System.out.println("Two class equals:" + (c1==c2));
+  /*
+  TestObj t11=(TestObj)c1.newInstance();
+  printme(t11);
+  TestObj t12=(TestObj)c1.newInstance();
+  printme(t12);
+  TestObj t21=(TestObj)c2.newInstance();
+  printme(t21);
+  TestObj t22=(TestObj)c2.newInstance();
+  printme(t22);
+*/  
+  TestObj t31=(TestObj)c3.newInstance();
+  //System.out.println("do t11 and t21 have the same classload:" + t31.getClass().getClassLoader()+ "," + (t11.getClass().getClassLoader()==t31.getClass().getClassLoader()) );
 
-  TestTestStatic t11=(TestTestStatic)c1.newInstance();
-  t11.printme();
-  TestTestStatic t12=(TestTestStatic)c1.newInstance();
-  t12.printme();
-
-  TestTestStatic t21=(TestTestStatic)c2.newInstance();
-  t21.printme();
-  TestTestStatic t22=(TestTestStatic)c2.newInstance();
-  t22.printme();
-
-  System.out.println("Four class instance :" + t11 + "," + t12 + "," + t21 + "," + t22);
+  //System.out.println("Four class instance :" + t11 + "," + t12 + "," + t21 + "," + t22);
   
   
 }
