@@ -15,6 +15,7 @@ HISTSIZE=100000
 #property for redhat 
 export soaserver=.englab.brq.redhat.com
 export soaserver1=.mw.lab.eng.brq.redhat.com
+export bosserver=.mw.lab.eng.bos.redhat.com
 export soa43url=https://svn.devel.redhat.com/repos/jboss-soa/branches/4.3/build-tools
 export soatrunkurl=https://svn.devel.redhat.com/repos/jboss-soa/trunk/build-tools
 export soa42url=https://svn.devel.redhat.com/repos/jboss-soa/branches/4.2.0/build-tools
@@ -31,11 +32,12 @@ alias myhelp="egrep 'alias|function .*\(' /classroom/bash/bashrc"
 alias brmsbin="cd brms-standalone-5.3.0/jboss-as/bin/"
 alias soabin="cd jboss-soa-p-5/jboss-as/bin/"
 alias tmp="mkdir /tmp/$(date +%B%d) 2>null || cd /tmp/$(date +%B%d)"
+alias glog="git log --pretty=oneline --abbrev-commit"
 
 alias xchatlog="cd ~/.xchat2/xchatlogs/"
 alias starttime="systemd-analyze blame"
 alias axel='axel --num-connections=125 --alternate'
-alias meadimport="get-and-import --install /data2/m2repo.jenkins --save /tmp/meadimport/ --tag soa-brms-6-todo --owner rzhang"
+alias mbuild="mead_debug --meadonly -Dfull=true build"
 
 
 alias "vi=vim"
@@ -56,15 +58,25 @@ alias "ssh05=ssh rzhang@jawa05$soaserver"
 alias "sshg3=ssh rzhang@jawa37g3.mw.lab.eng.brq.redhat.com"
 alias "sshg1=ssh rzhang@jawa37g1.mw.lab.eng.brq.redhat.com"
 alias "sshg2=ssh rzhang@jawa37g2.mw.lab.eng.brq.redhat.com"
+alias "sshdev=ssh rzhang@dev138.mw.lab.eng.bos.redhat.com"
 #xen14 don't have vimx
 alias "re=mutt -H ~/bin/review.template "
 
 alias "mvelshell=java -jar  mvel2-2.0.12.jar"
 
-alias "vman=java -Djavax.net.ssl.trustStore=${_KEYSTORE} -Djavax.net.ssl.trustStorePassword=changeit -Djavax.net.ssl.trustStoreType=jks \
+alias "vman=rm -rf vman-workspace && java -Djavax.net.ssl.trustStore=${_KEYSTORE} -Djavax.net.ssl.trustStorePassword=changeit -Djavax.net.ssl.trustStoreType=jks \
      -Djavax.net.ssl.keyStore=${_KEYSTORE} -Djavax.net.ssl.keyStorePassword=changeit -Djavax.net.ssl.keyStoreType=jks \
      -jar ~/vman.jar "
 
+function addeapuser(){
+if echo $(pwd) |grep '/bin' 1>null 
+then
+  echo "" >> ../standalone/configuration/application-roles.properties
+  echo "rzhang=kie-user,admin" >> ../standalone/configuration/application-roles.properties
+  echo "" >> ../standalone/configuration/application-users.properties
+  echo "rzhang=3c4eab2cf26e623b56604c95b3d4830a" >> ../standalone/configuration/application-users.properties
+fi
+}
 #This is for unzip reversively
 function r_unzip1(){
     todir="$(basename $1 .zip)"
@@ -455,6 +467,24 @@ function rgit()
 
         cd $d
         git $*
+        cd $cwd
+    done
+}
+
+function rvman()
+{
+    #setopt LOCAL_OPTIONS NO_ALL_EXPORT NO_AUTO_PUSHD
+
+    local cwd=`pwd`
+
+    for i in `find -L . \( -type d  -o -xtype l \) -name .git | sort`
+    do
+        local d=`dirname $i | sed 's/\.\///'`
+        echo "### -> $d"
+
+        cd $d
+        rm -rf vman-workspace 
+        vman --strict .
         cd $cwd
     done
 }
