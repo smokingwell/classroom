@@ -1,0 +1,37 @@
+<project name="Add brms authenticate into eap" default="apply.patch">
+  <property name="resourcedir" value="${basedir}/src/main/resources" />
+  <property name="common_resourcedir" value="${basedir}/src/main/common/resources" />
+  <property name="workdir" value="${basedir}/target/work" />
+	
+	<target name="apply.patch">
+		<antcall target="patch.action">
+			<param name="config" value="default" />
+		</antcall>
+		<antcall target="patch.action">
+			<param name="config" value="production" />
+		</antcall>
+	</target>
+
+	<target name="patch.action" >
+		<property name="eap_conf_dir" location="${workdir}/jboss-eap-${eap.short.version}/jboss-as/server/${config}" />
+		<!-- Apply Config XSLT Config Transformation for login-config.xml -->
+    <xslt style="${resourcedir}/brms-auth/login-config.xsl" in="${eap_conf_dir}/conf/login-config.xml" out="${eap_conf_dir}/conf/login-config.out">
+		</xslt>
+
+		<!-- Prettify The XML Output -->
+		<xslt style="${common_resourcedir}/soa-auth/pretty-print.xsl" in="${eap_conf_dir}/conf/login-config.out" out="${eap_conf_dir}/conf/login-config.xml">
+		</xslt>
+
+		<!-- Delete the scratch file -->
+		<delete file="${eap_conf_dir}/conf/login-config.out" />
+		<copy todir="${eap_conf_dir}/conf/props/" overwrite="true">
+			<fileset file="${resourcedir}/brms-auth/brms-users.properties"/>
+			<fileset file="${resourcedir}/brms-auth/brms-roles.properties"/>
+			<fileset file="${common_resourcedir}/soa-auth/AMConfig.properties"/>
+		</copy>
+		<!-- These files are not needed anymore -->
+		<delete file="${eap_conf_dir}/conf/props/jmx-console-users.properties"/>
+		<delete file="${eap_conf_dir}/conf/props/jmx-console-roles.properties"/>
+
+	</target>
+</project>
