@@ -31,7 +31,23 @@
 
    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
 
-  
+  <xsl:template match="/">
+    <xsl:choose>
+      <xsl:when test="system-property('xsl:version') >= 1">
+        <xsl:apply-templates />
+      </xsl:when>
+      <xsl:otherwise>
+        <html>
+        <head>
+          <title>XSLT 1.1 required</title>
+        </head>
+        <body>
+          <p>Sorry, this stylesheet requires XSLT 1.1.</p>
+        </body>
+        </html>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
    <xsl:template match="node()[name(.)='extensions']">
       <xsl:copy>
@@ -39,7 +55,8 @@
          <extension module="org.jboss.as.messaging"/>
       </xsl:copy>
    </xsl:template>
- <xsl:template match="@*|*">
+   
+   <xsl:template match="@*|*">
       <xsl:copy>
          <xsl:apply-templates select="@*|*"/>
       </xsl:copy>
