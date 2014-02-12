@@ -35,9 +35,9 @@ alias tmp="mkdir /tmp/$(date +%B%d) 2>null || cd /tmp/$(date +%B%d)"
 alias glog="git log --pretty=oneline --abbrev-commit"
 alias 1log="rgit log -1"
 
-alias xchatlog="cd ~/.xchat2/xchatlogs/"
+alias xchatlog="cd ~/.config/xchat2/xchatlogs/"
 alias starttime="systemd-analyze blame"
-alias axel='axel --num-connections=125 --alternate'
+alias axel='axel --num-connections=25 --alternate'
 alias mbuild="mead_debug --meadonly -Dfull=true build"
 alias localmead="LOCAL=1 make MVN_LOCAL_REPO=~/mead_debug/local-repo"
 
@@ -86,7 +86,7 @@ function addeapuser(){
 if echo $(pwd) |grep '/bin' 1>null 
 then
   echo "" >> ../standalone/configuration/application-roles.properties
-  echo "rzhang=kie-user,admin" >> ../standalone/configuration/application-roles.properties
+  echo "rzhang=analyst,developer,user,manager,admin" >> ../standalone/configuration/application-roles.properties
   echo "" >> ../standalone/configuration/application-users.properties
   echo "rzhang=3c4eab2cf26e623b56604c95b3d4830a" >> ../standalone/configuration/application-users.properties
 fi
@@ -191,8 +191,8 @@ function rpmcheck()
 
 function httpshare()
 {
-  cp -f $PWD/$1 /var/www/html/public/$2
-  echo "share link: http://$(ifconfig |grep 10.66|awk '{print $2}')/public/$2"
+  cp -f $1 /var/www/html/public/$2
+  echo "share link: http://smokingwell.usersys.redhat.com/public"
 }
 
 #Patch drools jbpm project's version

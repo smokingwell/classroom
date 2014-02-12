@@ -18,7 +18,7 @@ rpm -ivh http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-*
 
 #basic tools
-$INSTALL_CMD gnochm xchat thunderbird krusader xxdiff krename evince $GVIM unrar stardict xterm gconf-editor vpnc meld wine freemind colordiff goldendict p7zip
+$INSTALL_CMD gnochm xchat thunderbird krusader xxdiff krename evince $GVIM unrar stardict xterm gconf-editor vpnc meld wine freemind colordiff goldendict p7zip axel koji
 
 #for firefox, todo more
 rpm -ivh http://linuxdownload.adobe.com/linux/i386/adobe-release-i386-1.0-1.noarch.rpm
@@ -27,7 +27,8 @@ $INSTALL_CMD flash-plugin
 #input methord
 # create a symbolic link to /etc/X11/xinit/xinput.d/scim with name as xinput-YOUR LOCALE under /etc/alternatives. e.g. xinput-en_US
 # add "scim -d" to any of your startup script, e.g. xsession, .bashrc, .bash_profile
-$INSTALL_CMD ibus_libpinyin
+
+#$INSTALL_CMD ibus_libpinyin
 
 #multimedia & video codec & others
 #$INSTALL_CMD filezilla k3b gparted nautilus-open-terminal gftp gallery2-picasa 
